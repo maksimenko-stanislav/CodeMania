@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace CodeMania.Core.EqualityComparers.BlittableTypeArrayEqualityComparers
 {
 	[PublicAPI]
-	public sealed unsafe class TimeSpanArrayMemoryEqualityComparer : EqualityComparer<TimeSpan[]>
+	public sealed unsafe class TimeSpanArrayMemoryEqualityComparer : BlittableTypeArrayEqualityComparerBase<TimeSpan>
 	{
 		public override bool Equals(TimeSpan[] x, TimeSpan[] y)
 		{
@@ -33,23 +33,7 @@ namespace CodeMania.Core.EqualityComparers.BlittableTypeArrayEqualityComparers
 
 			fixed (void* startAddr = &obj[0])
 			{
-				int hashCode = HashHelper.HashSeed;
-
-				int i = 0;
-
-				// reinterpret as int*
-				int* intAddr = (int*) startAddr;
-
-				var arrayByteSize = obj.Length * sizeof(TimeSpan);
-
-				for (; i < arrayByteSize; i += sizeof(int))
-				{
-					hashCode = HashHelper.CombineHashCodes(hashCode * 397, *intAddr++);
-				}
-
-				// skip the rest because we know that sizeof(TimeSpan) == 8
-
-				return hashCode;
+				return GetHashCode((byte*) startAddr, sizeof(TimeSpan) * obj.Length);
 			}
 		}
 	}

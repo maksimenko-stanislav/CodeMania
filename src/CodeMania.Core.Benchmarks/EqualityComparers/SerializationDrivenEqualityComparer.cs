@@ -5,7 +5,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using CodeMania.Core.EqualityComparers;
 using CodeMania.Core.Internals;
 
-namespace CodeMania.Benchmarks.EqualityComparers
+namespace CodeMania.Core.Benchmarks.EqualityComparers
 {
 	public sealed unsafe class SerializationDrivenEqualityComparer<T> : EqualityComparer<T>
 	{

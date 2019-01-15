@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace CodeMania.Benchmarks.Utils
+namespace CodeMania.Core.Benchmarks.Utils
 {
 	public static class DeepCopy
 	{

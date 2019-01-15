@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace CodeMania.Core.EqualityComparers.BlittableTypeArrayEqualityComparers
 {
 	[PublicAPI]
-	public sealed unsafe class DateTimeArrayMemoryEqualityComparer : EqualityComparer<DateTime[]>
+	public sealed unsafe class DateTimeArrayMemoryEqualityComparer : BlittableTypeArrayEqualityComparerBase<DateTime>
 	{
 		public override bool Equals(DateTime[] x, DateTime[] y)
 		{
@@ -33,23 +33,7 @@ namespace CodeMania.Core.EqualityComparers.BlittableTypeArrayEqualityComparers
 
 			fixed (void* startAddr = &obj[0])
 			{
-				int hashCode = HashHelper.HashSeed;
-
-				int i = 0;
-
-				// reinterpret as int*
-				int* intAddr = (int*) startAddr;
-
-				var arrayByteSize = obj.Length * sizeof(DateTime);
-
-				for (; i < arrayByteSize; i += sizeof(int))
-				{
-					hashCode = HashHelper.CombineHashCodes(hashCode * 397, *intAddr++);
-				}
-
-				// skip the rest because we know that sizeof(DateTime) == 8
-
-				return hashCode;
+				return GetHashCode((byte*) startAddr, sizeof(DateTime) * obj.Length);
 			}
 		}
 	}

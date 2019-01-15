@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 namespace CodeMania.Core.EqualityComparers.BlittableTypeArrayEqualityComparers
 {
 	[PublicAPI]
-	public sealed unsafe class Int32ArrayMemoryEqualityComparer : EqualityComparer<int[]>
+	public sealed unsafe class Int32ArrayMemoryEqualityComparer : BlittableTypeArrayEqualityComparerBase<int>
 	{
 		public override bool Equals(int[] x, int[] y)
 		{
@@ -30,25 +30,9 @@ namespace CodeMania.Core.EqualityComparers.BlittableTypeArrayEqualityComparers
 		{
 			if (obj == null || obj.Length == 0) return 0;
 
-			fixed (int* startAddr = &obj[0])
+			fixed (void* startAddr = &obj[0])
 			{
-				int hashCode = HashHelper.HashSeed;
-
-				int i = 0;
-
-				// reinterpret as int*
-				int* intAddr = startAddr;
-
-				var arrayByteSize = obj.Length * sizeof(int);
-
-				for (; i < arrayByteSize; i += sizeof(int))
-				{
-					hashCode = HashHelper.CombineHashCodes(hashCode * 397, *intAddr++);
-				}
-
-				// skip the rest because we know that sizeof(int) == 4
-
-				return hashCode;
+				return GetHashCode((byte*) startAddr, sizeof(int) * obj.Length);
 			}
 		}
 	}

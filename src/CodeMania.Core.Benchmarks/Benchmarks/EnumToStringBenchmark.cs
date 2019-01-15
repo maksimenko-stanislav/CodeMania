@@ -1,8 +1,7 @@
 ﻿using BenchmarkDotNet.Attributes;
-using CodeMania.Core;
 using Common.TestData.TestDataTypes;
 
-namespace CodeMania.Benchmarks.Benchmarks
+namespace CodeMania.Core.Benchmarks.Benchmarks
 {
 	[MemoryDiagnoser]
 	[CoreJob(true), RPlotExporter, RankColumn]

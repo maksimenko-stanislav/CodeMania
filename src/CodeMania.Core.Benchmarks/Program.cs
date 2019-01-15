@@ -1,8 +1,8 @@
 ﻿using System;
 using BenchmarkDotNet.Running;
-using CodeMania.Benchmarks.Benchmarks;
+using CodeMania.Core.Benchmarks.Benchmarks;
 
-namespace CodeMania.Benchmarks
+namespace CodeMania.Core.Benchmarks
 {
 	class Program
 	{
@@ -10,7 +10,7 @@ namespace CodeMania.Benchmarks
 		{
 			//BenchmarkRunner.Run<EqualityComparer_EqualsTests>();
 			BenchmarkRunner.Run<EqualityComparer_GetHashCode>();
-			
+
 			Console.ReadLine();
 		}
 	}

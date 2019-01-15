@@ -8,7 +8,7 @@ using System.Reflection;
 using CodeMania.Core.Extensions;
 using CodeMania.Core.Internals;
 
-namespace CodeMania.Benchmarks.EqualityComparers
+namespace CodeMania.Core.Benchmarks.EqualityComparers
 {
 	public static class ReflectionBasedObjectStructureEqualityComparer
 	{
@@ -173,7 +173,7 @@ namespace CodeMania.Benchmarks.EqualityComparers
 		
 		public override int GetHashCode(T obj)
 		{
-			if (obj == null) throw new ArgumentNullException(nameof(obj));
+			if (obj == null) return 0;
 
 			var hashCode = HashHelper.HashSeed;
 
@@ -186,22 +186,22 @@ namespace CodeMania.Benchmarks.EqualityComparers
 
 				object value = property.GetValue(obj);
 
-				if (value == null || !visitedList.HashSet.Add(obj) || !visitedList.HashSet.Add(value))
+				if (value == null)
 				{
 					hashCode = HashHelper.CombineHashCodes(hashCode * 397, HashHelper.HashSeed);
 					continue;
 				}
-
-				// we have already visited this reference, continuing calculation to avoid StackOverFlowException.
-				if (!visitedList.HashSet.Add(value)) continue;
 
 				if (value.GetType().IsValueType || value is string)
 				{
 					hashCode = HashHelper.CombineHashCodes(hashCode * 397, value.GetHashCode());
 					continue;
 				}
-				
-				IEnumerable collection = value as IEnumerable;
+
+                // we have already visited this reference, continuing calculation to avoid StackOverFlowException.
+                if (!visitedList.HashSet.Add(value)) continue;
+
+                IEnumerable collection = value as IEnumerable;
 
 				if (collection != null)
 				{

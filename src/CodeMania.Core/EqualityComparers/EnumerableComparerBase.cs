@@ -17,8 +17,8 @@ namespace CodeMania.Core.EqualityComparers
 		{
 			var expressionCompiler = ExpressionCompiler.Default;
 
-			AreEqualsFunc = expressionCompiler.Compile((Expression<Func<T, T, bool>>) EqualsExpressions.CreateEqualsExpression(typeof(T) /*, typeof(T).IsArray)*/));
-			GetHashCodeFunc = expressionCompiler.Compile((Expression<Func<T, int>>) HashCodeExpressions.CreateGetHashCodeExpression(typeof(T) /*, typeof(T).IsArray)*/));
+			AreEqualsFunc = expressionCompiler.Compile((Expression<Func<T, T, bool>>) EqualsExpressions.CreateEqualsExpression(typeof(T)));
+			GetHashCodeFunc = expressionCompiler.Compile((Expression<Func<T, int>>) HashCodeExpressions.CreateGetHashCodeExpression(typeof(T)));
 			IsNullFunc = expressionCompiler.Compile(NullableHelper.GetIsNullExpression<T>());
 
 			GetHashCodeImplementation = NullableHelper.CanBeNull(typeof(T))
