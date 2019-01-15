@@ -11,9 +11,6 @@ using CodeMania.Core.Extensions;
 using CodeMania.Core.Internals;
 using JetBrains.Annotations;
 
-// ReSharper disable MultipleSpaces
-// ReSharper disable MultipleSpaces
-
 namespace CodeMania.Core.EqualityComparers
 {
 	/// <summary>
@@ -39,13 +36,9 @@ namespace CodeMania.Core.EqualityComparers
 	/// <summary>
 	/// Provides generic structural <see cref="IEqualityComparer{T}"/> implementation for any type.
 	/// <see cref="IEqualityComparer{T}.Equals(T,T)"/> and <see cref="IEqualityComparer{T}.GetHashCode(T)"/> inspect object structure
-	/// by provided set of properties and/or fields (see <see cref="IPropertyOrField{T}"/> type) with respect to collection and
-	/// complex object properties.
+	/// by provided set of properties and/or fields with respect to collection and complex object properties.
 	/// </summary>
 	/// <typeparam name="T">Type to compare equality.</typeparam>
-	/// <remarks>
-	/// 
-	/// </remarks>
 	[PublicAPI]
 	public sealed class ObjectStructureEqualityComparer<T> : EqualityComparer<T>
 	{
@@ -121,7 +114,7 @@ namespace CodeMania.Core.EqualityComparers
 				throw new InvalidOperationException(); // TODO: Pass message
 			}
 
-			var getHashCodeExpressions = new List<Expression>();
+			var getHashCodeExpressions = new List<Expression>(2 + primitiveMembers.Count * 2); // provide estimated capacity
 			// int hashCode
 			var hashCode = Expression.Variable(typeof(int), "hashCode");
 			// hashCode = HashHelper.HashSeed;

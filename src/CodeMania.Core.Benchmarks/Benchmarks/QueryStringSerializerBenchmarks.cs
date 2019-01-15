@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 using BenchmarkDotNet.Attributes;
 using CodeMania.Core.Serialization;
 
-namespace CodeMania.Benchmarks.Benchmarks
+namespace CodeMania.Core.Benchmarks.Benchmarks
 {
 	[DataContract]
 	public class TestEntity1

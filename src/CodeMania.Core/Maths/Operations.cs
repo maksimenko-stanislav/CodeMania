@@ -6,8 +6,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using CodeMania.Core.Utils;
 
-// ReSharper disable MultipleSpaces
-
 namespace CodeMania.Core.Maths
 {
 	public static class Operations<T1, T2, TResult>

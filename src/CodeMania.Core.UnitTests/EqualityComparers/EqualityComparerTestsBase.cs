@@ -36,41 +36,6 @@ namespace CodeMania.UnitTests.EqualityComparers
 			this.EqualityComparer = equalityComparer;
 		}
 
-		//[Test]
-		//public void PrintMemoryUsage()
-		//{
-		//	using (DataTarget dataTarget = DataTarget.AttachToProcess(Process.GetCurrentProcess().Id, 5000, AttachFlag.Passive))
-		//	{
-		//		var clrInfo = dataTarget.ClrVersions.First();
-		//		var runTime = clrInfo.CreateRuntime();
-
-		//		var testCase = GetTestCases().First();
-		//		if (!GC.TryStartNoGCRegion(1024 * 1024 * 500))
-		//		{
-		//			Assert.Fail("Can't start no GC region.");
-		//		}
-
-		//		var existingObjects = runTime.Heap.EnumerateObjects().Where(x => x.Type != null).Select(x => x.Address).ToList();
-		//		ClrObject[] currentObjects;
-		//		try
-		//		{
-		//			// ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-		//			equalityComparer.Equals(testCase.First, testCase.Second);
-
-		//			currentObjects = runTime.Heap.EnumerateObjects().ToArray();
-		//		}
-		//		finally
-		//		{
-		//			GC.EndNoGCRegion();
-		//		}
-
-		//		foreach (var clrObject in currentObjects.Where(x => x.Type != null && !existingObjects.Contains(x.Address)).OrderByDescending(x => x.Size))
-		//		{
-		//			Console.WriteLine("{0,12}\t{1}", clrObject.Size, clrObject.Type.Name);
-		//		}
-		//	}
-		//}
-
 		[Test]
 		public void Equals_ReturnsExpectedResult()
 		{

@@ -73,7 +73,6 @@
     <Compile Include="EnumMapTests.cs" />
     <Compile Include="EqualityComparers\ArrayOfIntArrayEqualityComparerTests.cs" />
     <Compile Include="EqualityComparers\ArrayOfIntEqualityComparerTests.cs" />
-    <Compile Include="EqualityComparers\ArrayOfStructuresMemoryEqualityComparerTest.cs" />
     <Compile Include="EqualityComparers\ArrayMemoryEqualityComparerTestBase.cs" />
     <Compile Include="EqualityComparers\EqualityComparerTestsBase.cs" />
     <Compile Include="EqualityComparers\IntArrayMemoryEqualityComparerTestBase.cs" />

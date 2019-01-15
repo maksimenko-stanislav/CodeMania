@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
 using AutoFixture;
 using BenchmarkDotNet.Attributes;
-using CodeMania.Benchmarks.EqualityComparers;
-using CodeMania.Benchmarks.Utils;
+using CodeMania.Core.Benchmarks.EqualityComparers;
+using CodeMania.Core.Benchmarks.Utils;
 using CodeMania.Core.EqualityComparers;
 using Common.TestData.TestDataTypes;
 
 // ReSharper disable InconsistentNaming
 
-namespace CodeMania.Benchmarks.Benchmarks
+namespace CodeMania.Core.Benchmarks.Benchmarks
 {
     public abstract class EqualityComparerBenchmarkBase
     {

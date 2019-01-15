@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Common.TestData.TestDataTypes;
 
-namespace CodeMania.Benchmarks.EqualityComparers
+namespace CodeMania.Core.Benchmarks.EqualityComparers
 {
 	public sealed class OtherEntityEqualityComparer : IEqualityComparer<OtherEntity>
 	{

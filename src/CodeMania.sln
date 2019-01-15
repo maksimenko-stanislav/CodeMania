@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeMania.TestData", "CodeM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeMania.Core.UnitTests", "CodeMania.Core.UnitTests\CodeMania.Core.UnitTests.csproj", "{9486E037-D121-49C1-B5C6-E0F2679F86E1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeMania.Benchmarks", "CodeMania.Benchmarks\CodeMania.Benchmarks.csproj", "{3138C363-E9CB-4025-8C83-F0990C8E1BCF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeMania.Core.Benchmarks", "CodeMania.Core.Benchmarks\CodeMania.Core.Benchmarks.csproj", "{3138C363-E9CB-4025-8C83-F0990C8E1BCF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

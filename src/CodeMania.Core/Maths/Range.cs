@@ -1,7 +1,5 @@
 ﻿using System;
 
-// ReSharper disable MultipleSpaces
-
 namespace CodeMania.Core.Maths
 {
 	public struct Range<T> : IEquatable<Range<T>>

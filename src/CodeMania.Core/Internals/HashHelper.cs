@@ -3,7 +3,7 @@
 namespace CodeMania.Core.Internals
 {
     // TODO: Use System.HashCode after moving to netstandard 2.1
-    /// <summary> 
+    /// <summary>
     /// Class contains helper methods for hash code calculations.
     /// </summary>
     public static class HashHelper

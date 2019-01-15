@@ -1,13 +1,14 @@
 ﻿using CodeMania.Core.EqualityComparers.BlittableTypeArrayEqualityComparers;
+using JetBrains.Annotations;
 
 namespace CodeMania.Core.EqualityComparers
 {
 	/// <summary>
 	/// [Internal use only] Provides pre-created instances of equality comparer for array of primitive types.
 	/// </summary>
+	[PublicAPI]
 	public static class PrimitiveTypeArrayEqualityComparers
 	{
-		// ReSharper disable MultipleSpaces
 		public static readonly BooleanArrayMemoryEqualityComparer  BooleanArrayMemoryEqualityComparer  = new BooleanArrayMemoryEqualityComparer();
 		public static readonly ByteArrayMemoryEqualityComparer     ByteArrayMemoryEqualityComparer     = new ByteArrayMemoryEqualityComparer();
 		public static readonly DateTimeArrayMemoryEqualityComparer DateTimeArrayMemoryEqualityComparer = new DateTimeArrayMemoryEqualityComparer();
@@ -21,6 +22,5 @@ namespace CodeMania.Core.EqualityComparers
 		public static readonly UInt32ArrayMemoryEqualityComparer   UInt32ArrayMemoryEqualityComparer   = new UInt32ArrayMemoryEqualityComparer();
 		public static readonly UInt64ArrayMemoryEqualityComparer   UInt64ArrayMemoryEqualityComparer   = new UInt64ArrayMemoryEqualityComparer();
 		public static readonly CharArrayMemoryEqualityComparer     CharArrayMemoryEqualityComparer     = new CharArrayMemoryEqualityComparer();
-		// ReSharper restore MultipleSpaces
 	}
 }

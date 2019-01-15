@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 namespace CodeMania.Core.EqualityComparers.BlittableTypeArrayEqualityComparers
 {
 	[PublicAPI]
-	public sealed unsafe class Int16ArrayMemoryEqualityComparer : EqualityComparer<short[]>
+	public sealed unsafe class Int16ArrayMemoryEqualityComparer : BlittableTypeArrayEqualityComparerBase<short>
 	{
 		public override bool Equals(short[] x, short[] y)
 		{
@@ -32,38 +32,7 @@ namespace CodeMania.Core.EqualityComparers.BlittableTypeArrayEqualityComparers
 
 			fixed (void* startAddr = &obj[0])
 			{
-				int hashCode = HashHelper.HashSeed;
-
-				int i = 0;
-
-				// reinterpret as int*
-				int* intAddr = (int*) startAddr;
-
-				var arrayByteSize = obj.Length * sizeof(short);
-				if (arrayByteSize >= sizeof(int))
-				{
-					int* endAddress = (int*) ((byte*) startAddr + arrayByteSize);
-					for (; intAddr < endAddress; intAddr++)
-					{
-						hashCode = HashHelper.CombineHashCodes(hashCode * 397, *intAddr);
-					}
-
-					//for (; i < arrayByteSize; i += sizeof(int))
-					//{
-					//	hashCode = HashHelper.CombineHashCodes(hashCode * 397, *intAddr++);
-					//}
-				}
-
-				// reinterpret as pointer to source type
-				short* ptrToRest = (short*) intAddr;
-
-				// process the rest of array
-				for (; i < arrayByteSize; i++)
-				{
-					hashCode = HashHelper.CombineHashCodes(hashCode * 397, *ptrToRest++);
-				}
-
-				return hashCode;
+				return GetHashCode((byte*) startAddr, sizeof(short) * obj.Length);
 			}
 		}
 	}

@@ -71,7 +71,7 @@ namespace CodeMania.Core
 		/// <param name="source">Value to cast.</param>
 		///
 		/// <exception cref="InvalidCastException">Cast from <typeparamref name="TFrom"/> to <typeparamref name="TTo"/> is not supported.</exception>
-		/// <returns>Value or reference casted to type <typeparamref name="TTo"/>.</returns>
+		/// <returns>Value or reference of type <typeparamref name="TTo"/>.</returns>
 		public static TTo Cast(TFrom source) => CastFunc(source);
 	}
 }

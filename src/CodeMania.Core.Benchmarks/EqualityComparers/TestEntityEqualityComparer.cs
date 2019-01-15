@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using CodeMania.Core.Internals;
 using Common.TestData.TestDataTypes;
 
-namespace CodeMania.Benchmarks.EqualityComparers
+namespace CodeMania.Core.Benchmarks.EqualityComparers
 {
 	internal static class Extensions
 	{
