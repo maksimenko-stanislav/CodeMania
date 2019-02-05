@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using CodeMania.Core.Maths;
 
 namespace CodeMania.Core
 {
 	internal static class CustomConversions
 	{
-		private static readonly IReadOnlyDictionary<Pair<Type>, Delegate> Delegates;
+		private static readonly Dictionary<(Type from, Type to), Delegate> Delegates;
 
 		static CustomConversions()
 		{
-			Delegates = new Dictionary<Pair<Type>, Delegate>(new PairEqualityComparer<Type>())
+			Delegates = new Dictionary<(Type from, Type to), Delegate>
 			{
-				{ (typeof(DateTime), typeof(double)), new Func<DateTime, double>(DateTimeToDouble) },
-				{ (typeof(double), typeof(DateTime)), new Func<double, DateTime>(DoubleToDateTime) },
-				{ (typeof(TimeSpan), typeof(double)), new Func<TimeSpan, double>(TimeSpanToDouble) },
-				{ (typeof(double), typeof(TimeSpan)), new Func<double, TimeSpan>(DoubleToTimeSpan) }
+				[(typeof(DateTime), typeof(double))] = new Func<DateTime, double>(DateTimeToDouble),
+				[(typeof(double), typeof(DateTime))] = new Func<double, DateTime>(DoubleToDateTime),
+				[(typeof(TimeSpan), typeof(double))] = new Func<TimeSpan, double>(TimeSpanToDouble),
+                [(typeof(double), typeof(TimeSpan))] = new Func<double, TimeSpan>(DoubleToTimeSpan) 
 			};
 		}
 
@@ -23,9 +22,8 @@ namespace CodeMania.Core
 
 		public static Func<TFrom, TTo> GetDelegate<TFrom, TTo>()
 		{
-			var pair = new Pair<Type>(typeof(TFrom), typeof(TTo));
-
-			if (Delegates.TryGetValue(pair, out var result))
+            var pair = (typeof(TFrom), typeof(TTo));
+            if (Delegates.TryGetValue(pair, out var result))
 			{
 				return (Func<TFrom, TTo>) result;
 			}
