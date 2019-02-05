@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using CodeMania.Core.Internals;
+﻿using CodeMania.Core.Internals;
 using JetBrains.Annotations;
 
 namespace CodeMania.Core.EqualityComparers.BlittableTypeArrayEqualityComparers

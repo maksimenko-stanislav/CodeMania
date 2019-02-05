@@ -44,7 +44,7 @@ namespace CodeMania.Core.EqualityComparers
 	{
 		#region Fields
 
-		private static readonly Lazy<ObjectStructureEqualityComparer<T>> defaultLazy =
+		private static readonly Lazy<ObjectStructureEqualityComparer<T>> DefaultLazy =
 			new Lazy<ObjectStructureEqualityComparer<T>>(() => new ObjectStructureEqualityComparer<T>(), true);
 
 		private readonly Func<T, T, bool> primitivePropertyComparer;
@@ -56,7 +56,7 @@ namespace CodeMania.Core.EqualityComparers
 
 		#region Properties
 
-		public static ObjectStructureEqualityComparer<T> Instance => defaultLazy.Value;
+		public static ObjectStructureEqualityComparer<T> Instance => DefaultLazy.Value;
 
 		#endregion
 

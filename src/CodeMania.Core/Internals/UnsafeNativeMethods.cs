@@ -12,7 +12,7 @@ namespace CodeMania.Core.Internals
 
         public static unsafe int Memcmp(IntPtr b1, IntPtr b2, long count)
         {
-            if (b1  == IntPtr.Zero)
+            if (b1 == IntPtr.Zero)
                 throw new ArgumentException("Zero pointer.", nameof(b1));
             if (b2 == IntPtr.Zero)
                 throw new ArgumentException("Zero pointer.", nameof(b2));

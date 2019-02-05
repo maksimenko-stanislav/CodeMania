@@ -170,6 +170,12 @@ namespace CodeMania.Core.Benchmarks.EqualityComparers
 			return y == null;
 		}
 
+		private static bool Equals<T>(T? x, T? y)
+			where T: struct
+		{
+			return EqualityComparer<T?>.Default.Equals(x, y);
+		}
+
 		public bool Equals(TestEntity x, TestEntity y)
 		{
 			if (ReferenceEquals(x, y)) return true;
@@ -182,19 +188,19 @@ namespace CodeMania.Core.Benchmarks.EqualityComparers
 			       x.NullableByte == y.NullableByte && Equals(x.NullableBytes, y.NullableBytes) && x.Bool == y.Bool &&
 			       Equals(x.Bools, y.Bools) && x.NullableBool == y.NullableBool &&
 			       Equals(x.NullableBools, y.NullableBools) && x.Float.Equals(y.Float) && Equals(x.Floats, y.Floats) &&
-			       x.NullableFloat.Equals(y.NullableFloat) && Equals(x.NullableFloats, y.NullableFloats) &&
+			       Equals(x.NullableFloat, y.NullableFloat) && Equals(x.NullableFloats, y.NullableFloats) &&
 			       x.Double.Equals(y.Double) && Equals(x.Doubles, y.Doubles) &&
-			       x.NullableDouble.Equals(y.NullableDouble) && Equals(x.NullableDoubles, y.NullableDoubles) &&
+			       Equals(x.NullableDouble, y.NullableDouble) && Equals(x.NullableDoubles, y.NullableDoubles) &&
 			       x.Decimal == y.Decimal && Equals(x.Decimals, y.Decimals) && x.NullableDecimal == y.NullableDecimal &&
 			       Equals(x.NullableDecimals, y.NullableDecimals) && x.Guid.Equals(y.Guid) &&
-			       Equals(x.Guids, y.Guids) && x.NullableGuid.Equals(y.NullableGuid) &&
+			       Equals(x.Guids, y.Guids) && Equals(x.NullableGuid, y.NullableGuid) &&
 			       Equals(x.NullableGuids, y.NullableGuids) && x.DateTime.Equals(y.DateTime) &&
-			       Equals(x.DateTimes, y.DateTimes) && x.NullabelDateTime.Equals(y.NullabelDateTime) &&
+			       Equals(x.DateTimes, y.DateTimes) && Equals(x.NullabelDateTime, y.NullabelDateTime) &&
 			       Equals(x.NullabelDateTimes, y.NullabelDateTimes) && x.TimeSpan.Equals(y.TimeSpan) &&
-			       Equals(x.TimeSpans, y.TimeSpans) && x.NullableTimeSpan.Equals(y.NullableTimeSpan) &&
+			       Equals(x.TimeSpans, y.TimeSpans) && Equals(x.NullableTimeSpan, y.NullableTimeSpan) &&
 			       Equals(x.NullableTimeSpans, y.NullableTimeSpans) && x.DateTimeOffset.Equals(y.DateTimeOffset) &&
 			       Equals(x.DateTimeOffsets, y.DateTimeOffsets) &&
-			       x.NullableDateTimeOffset.Equals(y.NullableDateTimeOffset) &&
+			       Equals(x.NullableDateTimeOffset, y.NullableDateTimeOffset) &&
 			       Equals(x.NullableDateTimeOffsets, y.NullableDateTimeOffsets) && string.Equals(x.String, y.String, StringComparison.Ordinal) &&
 			       Equals(x.Strings, y.Strings) && x.ByteEnum == y.ByteEnum && Equals(x.ByteEnums, y.ByteEnums) &&
 			       x.NullableByteEnum == y.NullableByteEnum && Equals(x.NullableByteEnums, y.NullableByteEnums) &&
@@ -206,7 +212,7 @@ namespace CodeMania.Core.Benchmarks.EqualityComparers
 			       x.NullableInt64Enum == y.NullableInt64Enum && Equals(x.NullableInt64Enums, y.NullableInt64Enums) &&
 			       x.UserDefinedStruct.Equals(y.UserDefinedStruct) &&
 			       Equals(x.UserDefinedStructs, y.UserDefinedStructs) &&
-			       x.NullableUserDefinedStruct.Equals(y.NullableUserDefinedStruct) &&
+			       Equals(x.NullableUserDefinedStruct, y.NullableUserDefinedStruct) &&
 			       Equals(x.NullableUserDefinedStructs, y.NullableUserDefinedStructs) &&
 				   // avoid circular references if you don't like StackOverflowException
 				   Equals(x.Parent, y.Parent) &&
@@ -274,7 +280,7 @@ namespace CodeMania.Core.Benchmarks.EqualityComparers
 				hashCode = (hashCode * 397) ^ (obj.Int32Enums != null ? obj.Int32Enums.GetHashCode() : 0);
 				hashCode = (hashCode * 397) ^ obj.NullableInt32Enum.GetHashCode();
 				hashCode = (hashCode * 397) ^ (obj.NullableInt32Enums != null ? obj.NullableInt32Enums.GetCombinedHashCode() : 0);
-				hashCode = (hashCode * 397) ^ obj.Int64Enum.GetHashCode();
+				hashCode = (hashCode * 397) ^ ((long) obj.Int64Enum).GetHashCode();
 				hashCode = (hashCode * 397) ^ (obj.Int64Enums != null ? obj.Int64Enums.GetHashCode() : 0);
 				hashCode = (hashCode * 397) ^ obj.NullableInt64Enum.GetHashCode();
 				hashCode = (hashCode * 397) ^ (obj.NullableInt64Enums != null ? obj.NullableInt64Enums.GetCombinedHashCode() : 0);

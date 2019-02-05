@@ -4,6 +4,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using CodeMania.Core.EqualityComparers;
+using CodeMania.Core.Extensions;
 
 namespace CodeMania.Core
 {
@@ -14,8 +16,8 @@ namespace CodeMania.Core
 		public static EnumMap<TEnum> Instance => LazyGetInstance.Value;
 
 		private readonly bool isFlagEnum;
-		private readonly Dictionary<string, TEnum> nameToEnumMap;
-		private readonly Dictionary<string, TEnum> ignoreCaseNameToEnumMap;
+		private readonly Dictionary<ReadOnlyMemory<char>, TEnum> nameToEnumMap;
+		private readonly Dictionary<ReadOnlyMemory<char>, TEnum> ignoreCaseNameToEnumMap;
 
 		private readonly Dictionary<TEnum, string> enumToNameMap;
 
@@ -32,13 +34,13 @@ namespace CodeMania.Core
 
 			nameToEnumMap =
 				Enum.GetNames(typeof(TEnum)).ToDictionary(
-					x => x,
+					x => x.AsMemory(),
 					x => (TEnum) Enum.Parse(typeof(TEnum), x),
-					StringComparer.Ordinal);
+					ReadOnlyMemoryOfCharEqualityComparer.Ordinal);
 
-			ignoreCaseNameToEnumMap = new Dictionary<string, TEnum>(
+			ignoreCaseNameToEnumMap = new Dictionary<ReadOnlyMemory<char>, TEnum>(
 				nameToEnumMap,
-				StringComparer.OrdinalIgnoreCase);
+				ReadOnlyMemoryOfCharEqualityComparer.OrdinalIgnoreCase);
 
 			enumToNameMap =
 				Enum.GetNames(typeof(TEnum)).ToDictionary(
@@ -114,14 +116,14 @@ namespace CodeMania.Core
 			var dictionary = ignoreCase ? ignoreCaseNameToEnumMap : nameToEnumMap;
 
 			if (isFlagEnum)
-				return ParseFlags(value.Trim(), dictionary);
+				return ParseFlags(value.AsMemory(), dictionary);
 
-			ParseInternal(value, dictionary, out TEnum result);
+			ParseInternal(value.AsMemory(), dictionary, out TEnum result);
 
 			return result;
 		}
 
-		private TEnum ParseFlags(string value, Dictionary<string, TEnum> dictionary)
+		private TEnum ParseFlags(ReadOnlyMemory<char> value, Dictionary<ReadOnlyMemory<char>, TEnum> dictionary)
 		{
 			ulong enumValue = 0;
 
@@ -130,12 +132,12 @@ namespace CodeMania.Core
 			{
 				int start = pos;
 
-				while (pos < value.Length && value[pos] != ',')
+				while (pos < value.Length && value.Span[pos] != ',')
 				{
 					pos++;
 				}
 
-				ParseInternal(value.Substring(start, pos - start), dictionary, out TEnum result);
+				ParseInternal(value.Slice(start, pos - start), dictionary, out TEnum result);
 
 				enumValue |= UnsafeDynamicCast<TEnum, ulong>.Cast(result);
 
@@ -153,28 +155,31 @@ namespace CodeMania.Core
 			var dictionary = ignoreCase ? ignoreCaseNameToEnumMap : nameToEnumMap;
 
 			if (isFlagEnum)
-				return TryParseFlags(value.Trim(), dictionary, out result);
+				return TryParseFlags(value.AsMemory(), dictionary, out result);
 
-			return TryParseInternal(value, dictionary, out result);
+			return TryParseInternal(value.AsMemory(), dictionary, out result);
 		}
 
-		private bool TryParseFlags(string value, Dictionary<string, TEnum> dictionary, out TEnum result)
+		private bool TryParseFlags(ReadOnlyMemory<char> value, Dictionary<ReadOnlyMemory<char>, TEnum> dictionary, out TEnum result)
 		{
 			ulong enumValue = 0;
 
 			int pos = 0;
+
+			var span = value.Span;
+
 			while (pos < value.Length)
 			{
 				int start = pos;
 
-				while (pos < value.Length && value[pos] != ',')
+				while (pos < value.Length && span[pos] != ',')
 				{
 					pos++;
 				}
 
-				if (!TryParseInternal(value.Substring(start, pos - start), dictionary, out TEnum temp))
+				if (!TryParseInternal(value.Slice(start, pos - start), dictionary, out TEnum temp))
 				{
-					result = default(TEnum);
+					result = default;
 					return false;
 				}
 
@@ -189,7 +194,7 @@ namespace CodeMania.Core
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void ParseInternal(string str, Dictionary<string, TEnum> dictionary, out TEnum result)
+		private void ParseInternal(ReadOnlyMemory<char> str, Dictionary<ReadOnlyMemory<char>, TEnum> dictionary, out TEnum result)
 		{
 			if (!dictionary.TryGetValue(str.Trim(), out result))
 			{
@@ -198,7 +203,7 @@ namespace CodeMania.Core
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private bool TryParseInternal(string str, Dictionary<string, TEnum> dictionary, out TEnum result) =>
+		private bool TryParseInternal(ReadOnlyMemory<char> str, Dictionary<ReadOnlyMemory<char>, TEnum> dictionary, out TEnum result) =>
 			dictionary.TryGetValue(str.Trim(), out result);
 	}
 }

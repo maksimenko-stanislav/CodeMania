@@ -80,7 +80,7 @@ namespace CodeMania.Core.Benchmarks.Benchmarks
         public bool SerializationDrivenEqualityComparer() => _SerializationDrivenEqualityComparer.Equals(_x, _y);
 
         [Benchmark]
-        public bool ObjectStructureComparer4() => _compiledExpressionComparer.Equals(_x, _y);
+        public bool ObjectStructureComparer() => _compiledExpressionComparer.Equals(_x, _y);
     }
 
     [MemoryDiagnoser]
@@ -97,6 +97,6 @@ namespace CodeMania.Core.Benchmarks.Benchmarks
         public int SerializationDrivenEqualityComparer() => _SerializationDrivenEqualityComparer.GetHashCode(_x);
 
         [Benchmark]
-        public int ObjectStructureComparer4() => _compiledExpressionComparer.GetHashCode(_x);
+        public int ObjectStructureComparer() => _compiledExpressionComparer.GetHashCode(_x);
     }
 }

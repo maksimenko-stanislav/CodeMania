@@ -10,6 +10,9 @@ using System.Threading;
 
 namespace CodeMania.Core.Serialization
 {
+	/// <summary>
+	/// Internal use only
+	/// </summary>
 	public class ReflectionBasedQueryStringSerializer<T>
 	{
 		private static readonly List<PropertyInfo> Properties;
