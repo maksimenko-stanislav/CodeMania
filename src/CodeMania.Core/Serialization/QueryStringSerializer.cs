@@ -72,7 +72,7 @@ namespace CodeMania.Core.Serialization
 
 		private static readonly Lazy<QueryStringSerializer<T>> LazyGetDataContractBasedInstance =
 			new Lazy<QueryStringSerializer<T>>(() =>
-				QueryStringSerializerBuilder.Create<T>().UseDataContractAttributesForNames().Build());
+				QueryStringSerializerBuilder.Create<T>().UseDataContracts().Build());
 
 		public static QueryStringSerializer<T> Default => LazyGetDefaultInstance.Value;
 
@@ -80,7 +80,7 @@ namespace CodeMania.Core.Serialization
 
 		private readonly Action<T, QueryStringWriter> serializer;
 
-		internal QueryStringSerializer(IEnumerable<PropertyContext<T>> propertyContexts)
+		internal QueryStringSerializer(IEnumerable<PropertyConfiguration<T>> propertyContexts)
 		{
 			if (propertyContexts == null)
 				throw new ArgumentNullException(nameof(propertyContexts));
@@ -88,7 +88,7 @@ namespace CodeMania.Core.Serialization
 			serializer = GetSerializer(propertyContexts.OrderBy(x => x.SerializationName));
 		}
 
-		private Action<T, QueryStringWriter> GetSerializer(IEnumerable<PropertyContext<T>> propertyContexts)
+		private Action<T, QueryStringWriter> GetSerializer(IEnumerable<PropertyConfiguration<T>> propertyContexts)
 		{
 			var objParameter = Expression.Parameter(typeof(T), "obj");
 			var writerParameter = Expression.Parameter(typeof(QueryStringWriter), "writer");

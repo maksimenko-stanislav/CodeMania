@@ -340,7 +340,7 @@ namespace CodeMania.Core.EqualityComparers
 				hashCode = HashHelper.CombineHashCodes(hashCode * 397, comparer.GetHashCode(property.Getter(obj)));
 			}
 
-			Debug.Assert(i == complexMembers.Count, "i == _propertyOrFields.Count");
+			Debug.Assert(i == complexMembers.Count, "i == complexMembers.Count");
 
 			return hashCode;
 		}

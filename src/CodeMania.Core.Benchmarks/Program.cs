@@ -22,9 +22,7 @@ namespace CodeMania.Core.Benchmarks
 
 			Console.WriteLine("Type benchmark number and press ENTER:");
 
-			var readLine = Console.ReadLine();
-
-			var input = readLine?.Trim()?.ToLowerInvariant() ?? string.Empty;
+			var input = ReadNonEmptyLine();
 
 			if (input == "quit" || input == "q") return;
 
@@ -35,7 +33,7 @@ namespace CodeMania.Core.Benchmarks
 
 			BenchmarkRunner.Run(benchmarkType);
 
-			if (AskYesNo("Run another benchmark?"))
+			if (AskYesNo("\r\nRun another benchmark?"))
 			{
 				Console.WriteLine();
 				goto start;
@@ -43,6 +41,16 @@ namespace CodeMania.Core.Benchmarks
 
 			Console.WriteLine("Press ENTER to exit.");
 			Console.ReadLine();
+		}
+
+		private static string ReadNonEmptyLine()
+		{
+			string input = string.Empty;
+			while (string.IsNullOrEmpty(input))
+			{
+				input = Console.ReadLine()?.Trim()?.ToLowerInvariant() ?? string.Empty;
+			}
+			return input;
 		}
 
 		private static bool AskYesNo(string question)
@@ -67,7 +75,7 @@ namespace CodeMania.Core.Benchmarks
 
 		private static void PrintBenchmarksMenu(IReadOnlyDictionary<string, Type> benchmarks)
 		{
-			var padding = benchmarks.Count.ToString();
+			var padding = Math.Max(benchmarks.Count.ToString().Length, 3);
 
 			var itemFormat = "{0," + padding + "}. {1}";
 

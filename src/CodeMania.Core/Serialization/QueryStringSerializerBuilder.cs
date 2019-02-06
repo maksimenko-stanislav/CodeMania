@@ -4,9 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.Serialization;
 using CodeMania.Core.Extensions;
-using JetBrains.Annotations;
 
 namespace CodeMania.Core.Serialization
 {
@@ -23,7 +21,7 @@ namespace CodeMania.Core.Serialization
 		public static QueryStringSerializerBuilder<T> Create<T>()
 		{
 			return new QueryStringSerializerBuilder<T>(
-					typeof(T).GetProperties().Select(PropertyContext<T>.Create))
+					typeof(T).GetProperties().Select(PropertyConfiguration<T>.Create))
 				.AdjustForEnumProperties();
 		}
 	}
@@ -36,11 +34,11 @@ namespace CodeMania.Core.Serialization
 	{
 		private const string ValueIsNullOrWhitespaceString = "Value cannot be null or whitespace.";
 
-		private readonly Dictionary<string, PropertyContext<T>> propertyContexts;
+		private readonly Dictionary<string, PropertyConfiguration<T>> propertyContexts;
 
 		private volatile bool isBuilt;
 
-		internal QueryStringSerializerBuilder(IEnumerable<PropertyContext<T>> propertyContexts)
+		internal QueryStringSerializerBuilder(IEnumerable<PropertyConfiguration<T>> propertyContexts)
 		{
 			this.propertyContexts =
 				propertyContexts.ToDictionary(x => x.PropertyInfo.Name, x => x, StringComparer.Ordinal);
@@ -195,7 +193,7 @@ namespace CodeMania.Core.Serialization
 
 			foreach (var pair in propertyContexts)
 			{
-				var propertyContext = pair.Value as PropertyContext<T, TProperty>;
+				var propertyContext = pair.Value as PropertyConfiguration<T, TProperty>;
 
 				if (propertyContext != null)
 				{
@@ -234,7 +232,7 @@ namespace CodeMania.Core.Serialization
 
 			foreach (var pair in propertyContexts)
 			{
-				var propertyContext = pair.Value as PropertyContext<T, TProperty>;
+				var propertyContext = pair.Value as PropertyConfiguration<T, TProperty>;
 
 				if (propertyContext != null)
 				{
@@ -382,20 +380,20 @@ namespace CodeMania.Core.Serialization
 			return this;
 		}
 
-		private PropertyContext<T, TProperty> GetPropertyContext<TProperty>(
+		private PropertyConfiguration<T, TProperty> GetPropertyContext<TProperty>(
 			Expression<Func<T, TProperty>> propertyExpression)
 		{
 			if (propertyExpression == null) throw new ArgumentNullException(nameof(propertyExpression));
 
 			var propertyName = propertyExpression.GetFieldOrPropertyName();
 
-			PropertyContext<T> propertyContext;
-			if (!propertyContexts.TryGetValue(propertyName, out propertyContext))
+			PropertyConfiguration<T> propertyConfiguration;
+			if (!propertyContexts.TryGetValue(propertyName, out propertyConfiguration))
 			{
 				throw new InvalidOperationException($"Type '{typeof(T).FullName} doesn't contain property '{propertyName}'");
 			}
 
-			return (PropertyContext<T, TProperty>) propertyContext;
+			return (PropertyConfiguration<T, TProperty>) propertyConfiguration;
 		}
 
 		private void CheckWhetherIsNotBuilt()
@@ -404,16 +402,6 @@ namespace CodeMania.Core.Serialization
 			{
 				throw new InvalidOperationException("Serializer is already built. Configuration of built serialization is not allowed.");
 			}
-		}
-	}
-
-	public static class QueryStringSerializerBuilderExtensions
-	{
-		public static QueryStringSerializerBuilder<T> UseDataContractAttributesForNames<T>([NotNull] this QueryStringSerializerBuilder<T> builder)
-		{
-			if (builder == null) throw new ArgumentNullException(nameof(builder));
-
-			return builder.WithNames(p => p.GetCustomAttribute<DataMemberAttribute>()?.Name ?? p.Name);
 		}
 	}
 }

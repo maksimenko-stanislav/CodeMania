@@ -6,16 +6,15 @@ using CodeMania.Core.Extensions;
 
 namespace CodeMania.Core.Serialization
 {
-	public abstract class PropertyContext<T>
+	public abstract class PropertyConfiguration<T>
 	{
 		public readonly PropertyInfo PropertyInfo;
 		private string serializationName;
 		private readonly Type collectionElementType;
 
-		protected Action<T, QueryStringWriter> Serializer;
 		internal Func<T, bool> ShouldSerializeFunc;
 
-		protected PropertyContext(PropertyInfo propertyInfo)
+		protected PropertyConfiguration(PropertyInfo propertyInfo)
 		{
 			PropertyInfo = propertyInfo ?? throw new ArgumentNullException(nameof(propertyInfo));
 			SerializationName = propertyInfo.Name;
@@ -39,33 +38,33 @@ namespace CodeMania.Core.Serialization
 			}
 		}
 
-		public static PropertyContext<T> Create(PropertyInfo propertyInfo)
+		public static PropertyConfiguration<T> Create(PropertyInfo propertyInfo)
 		{
 			if (propertyInfo == null)
 				throw new ArgumentNullException(nameof(propertyInfo));
 			if (!propertyInfo.IsInstancePropertyOf(typeof(T)))
 				throw new ArgumentException("", nameof(propertyInfo));
 
-			return (PropertyContext<T>) Activator.CreateInstance(
-				typeof(PropertyContext<,>).MakeGenericType(typeof(T), propertyInfo.PropertyType), propertyInfo);
+			return (PropertyConfiguration<T>) Activator.CreateInstance(
+				typeof(PropertyConfiguration<,>).MakeGenericType(typeof(T), propertyInfo.PropertyType), propertyInfo);
 		}
 
 		public abstract Expression GetSerializerExpression(ParameterExpression objParameter, ParameterExpression writerParameter);
 	}
 
-	public sealed class PropertyContext<T, TProperty> : PropertyContext<T>
+	public sealed class PropertyConfiguration<T, TProperty> : PropertyConfiguration<T>
 	{
-		public PropertyContext(string propertyName)
+		public PropertyConfiguration(string propertyName)
 			: this(typeof(T).GetProperty(propertyName))
 		{
 		}
 
-		public PropertyContext(Expression<Func<T, TProperty>> propertyExpression)
+		public PropertyConfiguration(Expression<Func<T, TProperty>> propertyExpression)
 			: this(propertyExpression.GetPropertyInfo())
 		{
 		}
 
-		public PropertyContext(PropertyInfo propertyInfo)
+		public PropertyConfiguration(PropertyInfo propertyInfo)
 			: base(propertyInfo)
 		{
 		}

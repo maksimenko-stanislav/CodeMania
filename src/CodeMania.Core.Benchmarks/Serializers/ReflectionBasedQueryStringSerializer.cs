@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 
-namespace CodeMania.Core.Serialization
+namespace CodeMania.Core.Benchmarks.Serializers
 {
 	/// <summary>
 	/// Internal use only
