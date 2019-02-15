@@ -19,7 +19,7 @@ namespace CodeMania.Core.EqualityComparers.BlittableTypeArrayEqualityComparers
 				fixed (void* xPtr = &x[0])
 				fixed (void* yPtr = &y[0])
 				{
-					return UnsafeNativeMethods.memcmp(xPtr, yPtr, x.LongLength * sizeof(Guid)) == 0;
+					return UnsafeNativeMethods.Memcmp(xPtr, yPtr, x.LongLength * sizeof(Guid)) == 0;
 				}
 			}
 
