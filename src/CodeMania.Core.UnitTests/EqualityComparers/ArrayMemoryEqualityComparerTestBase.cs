@@ -9,11 +9,11 @@ namespace CodeMania.UnitTests.EqualityComparers
 {
 	[TestFixture]
 	public abstract class ArrayMemoryEqualityComparerTestBase<T> : EqualityComparerTestsBase<T[]>
-		where T : struct 
+		where T : struct
 	{
 		public class ArrayComparisionTestCase : TestCaseData
 		{
-			public ArrayComparisionTestCase(T[] first, T[] second, bool areEquals) 
+			public ArrayComparisionTestCase(T[] first, T[] second, bool areEquals)
 				: base(first, second, areEquals)
 			{
 			}
@@ -32,11 +32,9 @@ namespace CodeMania.UnitTests.EqualityComparers
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				builder.Append(
-					string.Format(CultureInfo.InvariantCulture, "{0}", item) 
-					+ (i < array.Length - 1 ? ", " : string.Empty));
+				builder.Append(string.Format(CultureInfo.InvariantCulture, "{0}", item) + (i < array.Length - 1 ? ", " : string.Empty));
 			}
-			
+
 			builder.Append(" }");
 
 			return builder.ToString();
@@ -71,14 +69,9 @@ namespace CodeMania.UnitTests.EqualityComparers
 			}
 		}
 
-		//private static IEnumerable<ArrayComparisionTestCase> _testCases;
-		//private readonly IEqualityComparer<T[]> equalityComparer;
-
 		protected ArrayMemoryEqualityComparerTestBase(IEqualityComparer<T[]> equalityComparer)
 			: base(equalityComparer)
 		{
-			//_testCases = testCases;
-			//this.equalityComparer = equalityComparer;
 		}
 
 		protected static T[] Clone(T[] source)
@@ -92,29 +85,5 @@ namespace CodeMania.UnitTests.EqualityComparers
 
 			return result;
 		}
-
-		//public static IEnumerable<TestCaseData> TestCaseDatas => _testCases;
-		//[TestCaseSource(nameof(TestCaseDatas))]
-		//public void Equals_ReturnsExpectedResult(T[] x, T[] y, bool expected)
-		//{
-		//	// act
-		//	var actual = equalityComparer.Equals(x, y);
-
-		//	// assert
-		//	Assert.AreEqual(expected, actual);
-		//}
-
-		//[TestCaseSource(nameof(TestCaseDatas))]
-		//public void GetHashCode_ReturnsExpectedResult(T[] x, T[] y, bool expected)
-		//{
-		//	if (x == null || y == null) return; // is is not our target case ;-)
-
-		//	// act
-		//	var hashX = equalityComparer.GetHashCode(x);
-		//	var hashY = equalityComparer.GetHashCode(y);
-
-		//	// assert
-		//	Assert.AreEqual(expected, hashX == hashY);
-		//}
 	}
 }

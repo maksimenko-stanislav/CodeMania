@@ -106,10 +106,5 @@ namespace CodeMania.UnitTests
 		{
 			Assert.Throws<ArgumentException>(() => TypeExtensions.IsGenericAssignable(typeof(IList<int>), typeof(IEnumerable<int>)));
 		}
-
-		public void F()
-		{
-			var s = string.Format("{0}", 1.ToString());
-		}
 	}
 }

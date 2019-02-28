@@ -11,15 +11,6 @@ namespace CodeMania.UnitTests.EqualityComparers
 		{
 		}
 
-		//[Test]
-		//public void CustomTest()
-		//{
-		//	var x = new int[] { 1, 2, 3 };
-		//	var y = new int[] { 1, 2, 0 };
-
-		//	Assert.IsFalse(base.EqualityComparer.Equals(x, y));
-		//}
-
 		protected override IEnumerable<TestCase> GetTestCases()
 		{
 			yield return new TestCase(new int[] { 1 }, new int[] { 1 }, true);

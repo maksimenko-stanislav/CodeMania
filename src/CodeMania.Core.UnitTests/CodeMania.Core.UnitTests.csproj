@@ -93,8 +93,6 @@
     <Compile Include="EqualityComparers\TestEntityEqualityComparerTests.cs" />
     <Compile Include="ExpressionsTests\EqualsExpressionsTests.cs" />
     <Compile Include="Numbers\NumberTests.cs" />
-    <Compile Include="Serialization\QueryStringReaderTests.cs" />
-    <Compile Include="Serialization\QueryStringSerializerTest.cs" />
     <Compile Include="TypeExtensionsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -45,9 +45,9 @@ namespace CodeMania.UnitTests.Numbers
 		{
 			Numeric<bool> vX = x;
 			Numeric<bool> vY = y;
-		
+
 			bool actual = vX && vY;
-		
+
 			Assert.AreEqual(x && y, actual);
 		}
 
