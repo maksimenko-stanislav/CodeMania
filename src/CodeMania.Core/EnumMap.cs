@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
@@ -10,7 +9,7 @@ using CodeMania.Core.Extensions;
 namespace CodeMania.Core
 {
 	public sealed class EnumMap<TEnum>
-		where TEnum : struct
+		where TEnum : struct, Enum
 	{
 		private static readonly Lazy<EnumMap<TEnum>> LazyGetInstance = new Lazy<EnumMap<TEnum>>(() => new EnumMap<TEnum>(), true);
 		public static EnumMap<TEnum> Instance => LazyGetInstance.Value;
@@ -25,28 +24,21 @@ namespace CodeMania.Core
 
 		private EnumMap()
 		{
-			if (!typeof(TEnum).IsEnum || typeof(TEnum) == typeof(Enum))
-			{
-				throw new InvalidOperationException($"Generic type parameter should refer to an enumeration. Provided type: {typeof(TEnum).FullName}");
-			}
-
 			isFlagEnum = typeof(TEnum).IsDefined(typeof(FlagsAttribute), true);
+			var names = Enum.GetNames(typeof(TEnum));
 
-			nameToEnumMap =
-				Enum.GetNames(typeof(TEnum)).ToDictionary(
-					x => x.AsMemory(),
-					x => (TEnum) Enum.Parse(typeof(TEnum), x),
-					ReadOnlyMemoryOfCharEqualityComparer.Ordinal);
+			nameToEnumMap = new Dictionary<ReadOnlyMemory<char>, TEnum>(names.Length, ReadOnlyMemoryOfCharEqualityComparer.Ordinal);
+			ignoreCaseNameToEnumMap = new Dictionary<ReadOnlyMemory<char>, TEnum>(names.Length, ReadOnlyMemoryOfCharEqualityComparer.OrdinalIgnoreCase);
+			enumToNameMap = new Dictionary<TEnum, string>(names.Length, EqualityComparer<TEnum>.Default);
 
-			ignoreCaseNameToEnumMap = new Dictionary<ReadOnlyMemory<char>, TEnum>(
-				nameToEnumMap,
-				ReadOnlyMemoryOfCharEqualityComparer.OrdinalIgnoreCase);
+			foreach (var name in names)
+			{
+				TEnum value = (TEnum) Enum.Parse(typeof(TEnum), name);
 
-			enumToNameMap =
-				Enum.GetNames(typeof(TEnum)).ToDictionary(
-					x => (TEnum) Enum.Parse(typeof(TEnum), x),
-					x => x,
-					EqualityComparer<TEnum>.Default);
+				var nameAsMemory = name.AsMemory();
+				nameToEnumMap[nameAsMemory] = ignoreCaseNameToEnumMap[nameAsMemory] = value;
+				enumToNameMap[value] = name;
+			}
 		}
 
 		public bool HasFlag(TEnum enumValue, TEnum flagValue)
@@ -65,7 +57,7 @@ namespace CodeMania.Core
 			if (enumToNameMap.TryGetValue(enumValue, out var result))
 				return result;
 
-			return null;
+			return null; // TODO: Think about returning enumValue.ToString()
 		}
 
 		private string ToFlagsString(TEnum enumValue)
@@ -74,9 +66,10 @@ namespace CodeMania.Core
 
 			var builder = flagsStringBuilder.Value.Clear();
 
-			if (enumToNameMap.TryGetValue(enumValue, out var result))
+			string result;
+			if (enumToNameMap.TryGetValue(enumValue, out result))
 			{
-				builder.Append(result).Append(", ");
+				return result;
 			}
 			else
 			{
@@ -97,16 +90,16 @@ namespace CodeMania.Core
 		}
 
 		public string GetName<TEnumUnderlyingType>(TEnumUnderlyingType enumValue)
-			where TEnumUnderlyingType : struct =>
+			where TEnumUnderlyingType : unmanaged =>
 				ToString(UnsafeDynamicCast<TEnumUnderlyingType, TEnum>.Cast(enumValue));
 
 		public TEnumUnderlyingType GetValue<TEnumUnderlyingType>(TEnum value)
-			where TEnumUnderlyingType : struct =>
-			UnsafeDynamicCast<TEnum, TEnumUnderlyingType>.Cast(value);
+			where TEnumUnderlyingType : unmanaged =>
+				UnsafeDynamicCast<TEnum, TEnumUnderlyingType>.Cast(value);
 
 		public TEnumUnderlyingType? GetValue<TEnumUnderlyingType>(TEnum? value)
-			where TEnumUnderlyingType : struct =>
-			UnsafeDynamicCast<TEnum?, TEnumUnderlyingType?>.Cast(value);
+			where TEnumUnderlyingType : unmanaged =>
+				UnsafeDynamicCast<TEnum?, TEnumUnderlyingType?>.Cast(value);
 
 		public TEnum Parse(string value, bool ignoreCase = false)
 		{
