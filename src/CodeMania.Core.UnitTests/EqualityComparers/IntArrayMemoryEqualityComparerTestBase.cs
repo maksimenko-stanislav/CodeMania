@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using CodeMania.Core.EqualityComparers.BlittableTypeArrayEqualityComparers;
 using NUnit.Framework;
 
@@ -21,6 +23,14 @@ namespace CodeMania.UnitTests.EqualityComparers
 			yield return new TestCase(new int[] { }, new int[] { }, true);
 			yield return new TestCase(new int[1024], new int[1024], true);
 			yield return new TestCase(new int[1024], new int[1025], false);
+
+			var random = new Random(Guid.NewGuid().GetHashCode());
+			var ints = Enumerable.Range(0, 10000).Select(x => random.Next()).ToArray();
+			var ints2 = ints.ToList().ToArray();
+			yield return new TestCase(ints, ints2, true);
+
+			ints2[ints2.Length - 1] = unchecked(~(ints2[ints2.Length - 1] + 1));
+			yield return new TestCase(ints, ints2, false);
 		}
 	}
 }
