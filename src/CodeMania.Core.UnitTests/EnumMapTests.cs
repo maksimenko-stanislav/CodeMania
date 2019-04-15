@@ -10,7 +10,6 @@ using NUnit.Framework;
 
 namespace CodeMania.UnitTests
 {
-	// <package id="NUnit" version="3.11.0" targetFramework="net472" />
 	[TestFixture]
 	[Parallelizable(ParallelScope.All)]
 	public class EnumMapTests
