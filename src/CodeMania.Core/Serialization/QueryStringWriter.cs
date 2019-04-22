@@ -21,18 +21,7 @@ namespace CodeMania.Core.Serialization
 		{
 			if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
 
-			if (propertyValues != null)
-			{
-				foreach (var propertyValue in propertyValues)
-				{
-					if (propertyValue == null) continue;
-
-					Write(propertyName);
-					Write('=');
-					Write(Uri.EscapeDataString(propertyValue));
-					Write('&');
-				}
-			}
+			WriteCollectionProperty(propertyName, propertyValues);
 		}
 
 		public void WriteProperty(string propertyName, List<string> propertyValues)
@@ -41,15 +30,7 @@ namespace CodeMania.Core.Serialization
 
 			if (propertyValues != null)
 			{
-				foreach (var propertyValue in propertyValues)
-				{
-					if (propertyValue == null) continue;
-
-					Write(propertyName);
-					Write('=');
-					Write(Uri.EscapeDataString(propertyValue));
-					Write('&');
-				}
+				WriteCollectionProperty(propertyName, propertyValues);
 			}
 		}
 
@@ -59,15 +40,7 @@ namespace CodeMania.Core.Serialization
 
 			if (propertyValues != null)
 			{
-				foreach (var propertyValue in propertyValues)
-				{
-					if (propertyValue == null) continue;
-
-					Write(propertyName);
-					Write('=');
-					Write(Uri.EscapeDataString(propertyValue));
-					Write('&');
-				}
+				WriteCollectionProperty(propertyName, propertyValues);
 			}
 		}
 
@@ -77,6 +50,20 @@ namespace CodeMania.Core.Serialization
 
 			if (propertyValue != null)
 			{
+				Write(propertyName);
+				Write('=');
+				Write(Uri.EscapeDataString(propertyValue));
+				Write('&');
+			}
+		}
+
+		private void WriteCollectionProperty<TCollection>(string propertyName, TCollection propertyValues)
+			where TCollection : IEnumerable<string>
+		{
+			foreach (var propertyValue in propertyValues)
+			{
+				if (propertyValue == null) continue;
+
 				Write(propertyName);
 				Write('=');
 				Write(Uri.EscapeDataString(propertyValue));

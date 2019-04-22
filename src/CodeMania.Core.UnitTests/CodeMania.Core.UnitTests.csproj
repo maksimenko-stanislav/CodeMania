@@ -66,6 +66,7 @@
     <Compile Include="EqualityComparers\TestEntityEqualityComparerTests.cs" />
     <Compile Include="ExpressionsTests\EqualsExpressionsTests.cs" />
     <Compile Include="Numbers\NumberTests.cs" />
+    <Compile Include="Serialization\QueryStringTokenizerTests.cs" />
     <Compile Include="TypeExtensionsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -102,6 +103,7 @@
       <Version>4.5.2</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

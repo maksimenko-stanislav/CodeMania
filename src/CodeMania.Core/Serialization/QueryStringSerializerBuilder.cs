@@ -5,38 +5,37 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using CodeMania.Core.Extensions;
+using CodeMania.Core.Serialization.Converters;
+using JetBrains.Annotations;
 
 namespace CodeMania.Core.Serialization
 {
 	/// <summary>
 	/// Contains methods for creating <see cref="QueryStringSerializerBuilder{T}"/> instances.
 	/// </summary>
+	[PublicAPI]
 	public static class QueryStringSerializerBuilder
 	{
 		/// <summary>
 		/// Creates new instance of <see cref="QueryStringSerializerBuilder{T}"/> with default settings.
 		/// </summary>
-		/// <typeparam name="T">Type to serialize.</typeparam>
+		/// <typeparam name="T">Type to [de]serialize.</typeparam>
 		/// <returns>New instance of <see cref="QueryStringSerializerBuilder{T}"/> with default settings.</returns>
-		public static QueryStringSerializerBuilder<T> Create<T>()
-		{
-			return new QueryStringSerializerBuilder<T>(
-					typeof(T).GetProperties().Select(PropertyConfiguration<T>.Create))
+		public static QueryStringSerializerBuilder<T> Create<T>() =>
+			new QueryStringSerializerBuilder<T>(typeof(T).GetProperties().Select(PropertyConfiguration<T>.Create))
 				.AdjustForEnumProperties();
-		}
 	}
 
 	/// <summary>
 	/// Provides methods to configure query string serialization process.
 	/// </summary>
-	/// <typeparam name="T">Type to serialize.</typeparam>
+	/// <typeparam name="T">Type to [de]serialize.</typeparam>
+	[PublicAPI]
 	public class QueryStringSerializerBuilder<T>
 	{
 		private const string ValueIsNullOrWhitespaceString = "Value cannot be null or whitespace.";
 
 		private readonly Dictionary<string, PropertyConfiguration<T>> propertyContexts;
-
-		private volatile bool isBuilt;
 
 		internal QueryStringSerializerBuilder(IEnumerable<PropertyConfiguration<T>> propertyContexts)
 		{
@@ -44,20 +43,13 @@ namespace CodeMania.Core.Serialization
 				propertyContexts.ToDictionary(x => x.PropertyInfo.Name, x => x, StringComparer.Ordinal);
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns></returns>
 		public QueryStringSerializer<T> Build()
 		{
-			isBuilt = true;
 			return new QueryStringSerializer<T>(propertyContexts.Values);
 		}
 
 		public QueryStringSerializerBuilder<T> Ignore<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
 		{
-			CheckWhetherIsNotBuilt();
-
 			var propertyName = propertyExpression.GetFieldOrPropertyName();
 
 			if (!propertyContexts.Remove(propertyName))
@@ -75,7 +67,6 @@ namespace CodeMania.Core.Serialization
 		{
 			if (string.IsNullOrWhiteSpace(newName))
 				throw new ArgumentException(ValueIsNullOrWhitespaceString, nameof(newName));
-			CheckWhetherIsNotBuilt();
 
 			var propertyContext = GetPropertyContext(propertyExpression);
 
@@ -90,7 +81,6 @@ namespace CodeMania.Core.Serialization
 		{
 			if (getNewName == null)
 				throw new ArgumentException(ValueIsNullOrWhitespaceString, nameof(getNewName));
-			CheckWhetherIsNotBuilt();
 
 			var propertyContext = GetPropertyContext(propertyExpression);
 
@@ -104,7 +94,6 @@ namespace CodeMania.Core.Serialization
 		{
 			if (getNewName == null)
 				throw new ArgumentException(ValueIsNullOrWhitespaceString, nameof(getNewName));
-			CheckWhetherIsNotBuilt();
 
 			foreach (var context in propertyContexts.Values)
 			{
@@ -119,7 +108,6 @@ namespace CodeMania.Core.Serialization
 			IConverter<TProperty, string> converter)
 		{
 			if (converter == null) throw new ArgumentNullException(nameof(converter));
-			CheckWhetherIsNotBuilt();
 
 			return ConvertPropertyValueWith(propertyExpression, (obj, value) => converter.Convert(value));
 		}
@@ -128,15 +116,19 @@ namespace CodeMania.Core.Serialization
 			Expression<Func<T, TProperty>> propertyExpression,
 			Expression<ValueConverter<T, TProperty, string>> converter)
 		{
-			if (converter == null) throw new ArgumentNullException(nameof(converter));
-			CheckWhetherIsNotBuilt();
+			if (converter == null)
+			{
+				throw new ArgumentNullException(nameof(converter));
+			}
 
 			var propertyContext = GetPropertyContext(propertyExpression);
 
 			if (propertyContext.IsCollection)
+			{
 				throw new InvalidOperationException(
 					$"The property {typeof(T).FullName}.{propertyContext.PropertyInfo.Name} returns collection of elements instead of scalar value." +
 					$"Call {nameof(WithConverter)} instead.");
+			}
 
 			propertyContext.ScalarValueConverter = converter;
 
@@ -158,15 +150,19 @@ namespace CodeMania.Core.Serialization
 			Expression<ValueConverter<T, TProperty, IEnumerable<string>>> converter)
 			where TProperty : IEnumerable
 		{
-			if (converter == null) throw new ArgumentNullException(nameof(converter));
-			CheckWhetherIsNotBuilt();
+			if (converter == null)
+			{
+				throw new ArgumentNullException(nameof(converter));
+			}
 
 			var propertyContext = GetPropertyContext(propertyExpression);
 
 			if (!propertyContext.IsCollection)
+			{
 				throw new InvalidOperationException(
 					$"The property {typeof(T).FullName}.{propertyContext.PropertyInfo.Name} returns scalar value instead of collection." +
 					$"Call {nameof(WithConverter)} instead.");
+			}
 
 			propertyContext.CollectionValueConverter = converter;
 
@@ -177,7 +173,6 @@ namespace CodeMania.Core.Serialization
 			IConverter<TProperty, string> converter)
 		{
 			if (converter == null) throw new ArgumentNullException(nameof(converter));
-			CheckWhetherIsNotBuilt();
 
 			return WithConverter((TProperty value) => converter.Convert(value));
 		}
@@ -186,7 +181,6 @@ namespace CodeMania.Core.Serialization
 			Expression<ValueConverter<TProperty, string>> converter)
 		{
 			if (converter == null) throw new ArgumentNullException(nameof(converter));
-			CheckWhetherIsNotBuilt();
 
 			var propertyParameter = Expression.Parameter(typeof(TProperty), "value");
 			var objParameter = Expression.Parameter(typeof(T), "obj");
@@ -215,7 +209,6 @@ namespace CodeMania.Core.Serialization
 			where TProperty : IEnumerable
 		{
 			if (converter == null) throw new ArgumentNullException(nameof(converter));
-			CheckWhetherIsNotBuilt();
 
 			return WithConverter<TProperty>(value => converter.Convert(value));
 		}
@@ -225,7 +218,6 @@ namespace CodeMania.Core.Serialization
 			where TProperty : IEnumerable
 		{
 			if (converter == null) throw new ArgumentNullException(nameof(converter));
-			CheckWhetherIsNotBuilt();
 
 			var propertyParameter = Expression.Parameter(typeof(TProperty), "value");
 			var objParameter = Expression.Parameter(typeof(T), "obj");
@@ -251,8 +243,6 @@ namespace CodeMania.Core.Serialization
 
 		public QueryStringSerializerBuilder<T> ShouldSerializeDefaultValues(bool shouldSerialize)
 		{
-			CheckWhetherIsNotBuilt();
-
 			Func<T, bool> shouldSerializeFunc = obj => shouldSerialize;
 
 			foreach (var propertyContext in propertyContexts)
@@ -263,16 +253,8 @@ namespace CodeMania.Core.Serialization
 			return this;
 		}
 
-		/// <summary>
-		/// Finds properties which return enumeration, nullable enumeration, collection of enumeration and
-		/// collection of nullable enumeration and sets default enumeration to string converters.
-		/// See types <seealso cref="EnumToStringConverter{TEnum}"/>, <seealso cref="EnumCollectionToStringsConverter{TEnum}"/>,
-		/// <seealso cref="NullableEnumToStringConverter{TEnum}"/> and <seealso cref="NullableEnumCollectionToStringsConverter{TEnum}"/> for more details.
-		/// </summary>
-		/// <remarks>Method is used internally to setup default enum converters only.</remarks>
 		internal QueryStringSerializerBuilder<T> AdjustForEnumProperties()
 		{
-			CheckWhetherIsNotBuilt();
 			foreach (var pair in propertyContexts)
 			{
 				var propertyContext = pair.Value;
@@ -394,14 +376,6 @@ namespace CodeMania.Core.Serialization
 			}
 
 			return (PropertyConfiguration<T, TProperty>) propertyConfiguration;
-		}
-
-		private void CheckWhetherIsNotBuilt()
-		{
-			if (isBuilt)
-			{
-				throw new InvalidOperationException("Serializer is already built. Configuration of built serialization is not allowed.");
-			}
 		}
 	}
 }

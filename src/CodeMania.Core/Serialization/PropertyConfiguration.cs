@@ -26,7 +26,7 @@ namespace CodeMania.Core.Serialization
 
 		public string SerializationName
 		{
-			get { return serializationName ?? PropertyInfo.Name; }
+			get => serializationName ?? PropertyInfo.Name;
 			internal set
 			{
 				if (string.IsNullOrWhiteSpace(value))
@@ -138,10 +138,9 @@ namespace CodeMania.Core.Serialization
 			{
 				throw new InvalidOperationException(
 					"Can't find appropriate method for serialization. " +
-				    $"Property type: {propertyType.FullName}, property name: {PropertyInfo.Name}. " +
+					$"Property type: {propertyType.FullName}, property name: {PropertyInfo.Name}. " +
 					$"To avoid this configure serialization by calling methods of {nameof(QueryStringSerializerBuilder<T>)}: " +
-					$"{nameof(QueryStringSerializerBuilder<T>.ConvertPropertyValueWith)}, {nameof(QueryStringSerializerBuilder<T>.ConvertPropertyValueWith)}" +
-					$"{nameof(QueryStringSerializerBuilder<T>.WithConverter)}, {nameof(QueryStringSerializerBuilder<T>.WithConverter)}.");
+					$"{nameof(QueryStringSerializerBuilder<T>.ConvertPropertyValueWith)} and {nameof(QueryStringSerializerBuilder<T>.WithConverter)}.");
 			}
 
 			return Expression.IfThen(
@@ -150,7 +149,7 @@ namespace CodeMania.Core.Serialization
 					writerParameter,
 					writerMethod,
 					Expression.Constant(
-						string.Intern(Uri.EscapeDataString(SerializationName)), // cache escaped property name
+						Uri.EscapeDataString(SerializationName),
 						typeof(string)),
 					getPropertyValueExpression
 				)
@@ -159,7 +158,6 @@ namespace CodeMania.Core.Serialization
 
 		private Expression GetShouldSerializeExpression(ParameterExpression objParameter, MemberExpression propertyExpression)
 		{
-			// defensive reference copy
 			var existingExpression = CustomShouldSerializeExpression;
 			if (existingExpression != null)
 			{
@@ -171,18 +169,18 @@ namespace CodeMania.Core.Serialization
 
 			if (IsCollection)
 			{
-				var countProperty = typeof(TProperty).GetProperty(nameof(ICollection<object>.Count), typeof(int));
+				var countProperty = typeof(TProperty).GetProperty(nameof(ICollection<T>.Count), typeof(int));
 
 				if (countProperty != null)
 				{
 					// obj => obj.CustomCollectionProperty != default(TProperty) && obj.CustomCollectionProperty.Count > 0;
 					return Expression.AndAlso(
-							Expression.NotEqual(
-								propertyExpression,
-								propertyDefaultValue),
-							Expression.GreaterThan(
-								Expression.Property(propertyExpression, countProperty),
-								Expression.Constant(0, typeof(int)))
+						Expression.NotEqual(
+							propertyExpression,
+							propertyDefaultValue),
+						Expression.GreaterThan(
+							Expression.Property(propertyExpression, countProperty),
+							Expression.Constant(0, typeof(int)))
 					);
 				}
 			}
