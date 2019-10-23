@@ -1,29 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 
 namespace CodeMania.Core.EqualityComparers
 {
-	internal sealed class EqualityComparerContext
+	public sealed class EqualityComparerContext
 	{
-		private struct Element
-		{
-			public readonly object Data;
-
-			public Element(object data)
-			{
-				Data = data;
-			}
-		}
-
-		private sealed class DataEqualityComparer : EqualityComparer<Element>
-		{
-			public static readonly DataEqualityComparer Instance = new DataEqualityComparer();
-
-			public override bool Equals(Element x, Element y) => ReferenceEquals(x.Data, y.Data);
-
-			public override int GetHashCode(Element obj) => obj.Data?.GetHashCode() ?? 0;
-		}
+		private const int DefaultCapacity = 1024;
 
 		private static readonly ThreadLocal<EqualityComparerContext> CurrentLocal = new ThreadLocal<EqualityComparerContext>(() => new EqualityComparerContext());
 		private readonly HashSet<Element> visitedList;
@@ -34,27 +19,86 @@ namespace CodeMania.Core.EqualityComparers
 
 		private EqualityComparerContext()
 		{
-			visitedList = new HashSet<Element>(DataEqualityComparer.Instance).SetCapacity(1024); // init some default capacity.
+			visitedList = new HashSet<Element>(ElementEqualityComparer.Instance).SetCapacity(DefaultCapacity);
 		}
 
-		public void Free() => visitedList.Clear();
+		public void Free()
+		{
+			var currentCount = visitedList.Count;
+			visitedList.Clear();
+			if (currentCount > DefaultCapacity)
+			{
+				visitedList.SetCapacity(DefaultCapacity);
+			}
+		}
 
 		public bool TryAdd(object obj) => obj == null || visitedList.Add(new Element(obj));
+
+		#region Nested Types
+
+		private struct Element
+		{
+			public readonly object Data;
+
+			public Element(object data)
+			{
+				Data = data;
+			}
+		}
+
+		private sealed class ElementEqualityComparer : EqualityComparer<Element>
+		{
+			public static readonly ElementEqualityComparer Instance = new ElementEqualityComparer();
+
+			public override bool Equals(Element x, Element y) => ReferenceEquals(x.Data, y.Data);
+
+			public override int GetHashCode(Element obj) => obj.Data?.GetHashCode() ?? 0;
+		}
+
+		#endregion
 	}
 
-	// TODO: use appropriate HashSet ctor with capacity argument when move to netstandard 2.1 and remove this crutch.
-	// TODO: thanks to this thread: https://stackoverflow.com/questions/6771917/why-cant-i-preallocate-a-hashsett
+	// NOTE: https://stackoverflow.com/questions/6771917/why-cant-i-preallocate-a-hashsett
 	internal static class HashSetExtensions
 	{
 		private static class HashSetDelegateHolder<T>
 		{
-			private const BindingFlags Flags = BindingFlags.Instance | BindingFlags.NonPublic;
-			public static MethodInfo InitializeMethod { get; } = typeof(HashSet<T>).GetMethod("Initialize", Flags);
+			public static readonly Action<HashSet<T>, int> SetCapacityDelegate;
+
+			static HashSetDelegateHolder()
+			{
+				MethodInfo initializeMethod = typeof(HashSet<T>).GetMethod("Initialize", BindingFlags.Instance | BindingFlags.NonPublic);
+
+				if (initializeMethod != null)
+				{
+					try
+					{
+						var hs = Expression.Parameter(typeof(HashSet<T>), "hs");
+						var capacity = Expression.Parameter(typeof(int), "capacity");
+
+						SetCapacityDelegate = Expression.Lambda<Action<HashSet<T>, int>>(
+							Expression.Call(hs, initializeMethod, capacity),
+							hs, capacity).Compile();
+
+						return;
+					}
+					// ReSharper disable once EmptyGeneralCatchClause
+					catch (Exception)
+					{
+					}
+				}
+
+				SetCapacityDelegate = (hs, capacity) => { };
+			}
 		}
 
 		public static HashSet<T> SetCapacity<T>(this HashSet<T> hs, int capacity)
 		{
-			HashSetDelegateHolder<T>.InitializeMethod.Invoke(hs, new object[] { capacity });
+#if NETCOREAPP3_0
+			hs.EnsureCapacity(capacity);
+#else
+			HashSetDelegateHolder<T>.SetCapacityDelegate(hs, capacity);
+#endif
 			return hs;
 		}
 	}

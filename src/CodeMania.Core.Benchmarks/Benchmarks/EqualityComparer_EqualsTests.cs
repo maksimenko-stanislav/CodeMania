@@ -5,7 +5,7 @@ using BenchmarkDotNet.Attributes;
 using CodeMania.Core.Benchmarks.EqualityComparers;
 using CodeMania.Core.Benchmarks.Utils;
 using CodeMania.Core.EqualityComparers;
-using Common.TestData.TestDataTypes;
+using CodeMania.TestData.TestDataTypes;
 
 // ReSharper disable InconsistentNaming
 

@@ -1,4 +1,4 @@
-﻿#if !NETSTANDARD2_0
+﻿#if !NETSTANDARD2_0 && !NETCOREAPP
 
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -6,13 +6,13 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Common
+namespace CodeMania.Core
 {
 
 	[SuppressMessage("ReSharper", "RedundantToStringCallForValueType")]
 	public class DynamicMethodExpressionCompiler : IExpressionCompiler
 	{
-		private static readonly FastExpressionCompiler FallbackCompiler = new FastExpressionCompiler();
+		private static readonly DefaultExpressionCompiler FallbackCompiler = DefaultExpressionCompiler.Instance;
 		private readonly ModuleBuilder moduleBuilder;
 
 #if DEBUG
@@ -33,14 +33,8 @@ namespace Common
 				AssemblyBuilderAccess.Run;
 #endif
 
-#if NETSTANDARD
-			return AssemblyBuilder.DefineDynamicAssembly(
-				new AssemblyName("DynamicAssembly_" + (assemblyNameSuffix ?? Guid.NewGuid().ToString("N"))),
-				assemblyBuilderAccess);
-#else
 			return AppDomain.CurrentDomain.DefineDynamicAssembly(
-				new AssemblyName("DynamicAssembly_" + (assemblyNameSuffix ?? Guid.NewGuid().ToString("N"), assemblyBuilderAccess)
-#endif
+				new AssemblyName("DynamicAssembly_" + (assemblyNameSuffix ?? Guid.NewGuid().ToString("N"))), assemblyBuilderAccess);
 		}
 
 

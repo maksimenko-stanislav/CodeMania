@@ -4,6 +4,7 @@ namespace CodeMania.Core.Extensions
 {
 	public static class ReadOnlyMemoryOfCharExtensions
 	{
+#if !NETCOREAPP3_0
 		public static ReadOnlyMemory<char> Trim(this ReadOnlyMemory<char> source)
 		{
 			int start = 0;
@@ -23,6 +24,7 @@ namespace CodeMania.Core.Extensions
 
 			return source.Slice(start, end - start + 1);
 		}
+#endif
 
 		public static int IndexOf(this ReadOnlyMemory<char> source, char ch)
 		{

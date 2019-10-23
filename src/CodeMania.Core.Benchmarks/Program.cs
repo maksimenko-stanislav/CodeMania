@@ -9,8 +9,94 @@ namespace CodeMania.Core.Benchmarks
 {
 	class Program
 	{
+		public class Test : IEquatable<Test>
+		{
+			public readonly int Value;
+
+			public Test(int value)
+			{
+				Value = value;
+			}
+
+			public bool Equals(Test other)
+			{
+				if (ReferenceEquals(null, other))
+				{
+					return false;
+				}
+
+				if (ReferenceEquals(this, other))
+				{
+					return true;
+				}
+
+				return Value == other.Value;
+			}
+
+			public override bool Equals(object obj)
+			{
+				if (ReferenceEquals(null, obj))
+				{
+					return false;
+				}
+
+				if (ReferenceEquals(this, obj))
+				{
+					return true;
+				}
+
+				if (obj.GetType() != this.GetType())
+				{
+					return false;
+				}
+
+				return Equals((Test) obj);
+			}
+
+			public override int GetHashCode()
+			{
+				return Value;
+			}
+
+			public static bool operator ==(Test left, Test right)
+			{
+				return Equals(left, right);
+			}
+
+			public static bool operator !=(Test left, Test right)
+			{
+				return !Equals(left, right);
+			}
+		}
+
 		static void Main(string[] args)
 		{
+			////var arr1 = new Test[] { new Test(1), new Test(2) };
+			////var arr2 = new Test[] { new Test(1), new Test(2) };
+			////ReadOnlySpan<Test> s1 = arr1;
+			////ReadOnlySpan<Test> s2 = arr2;
+			////Console.WriteLine(s1.SequenceEqual(s2));
+
+			//ReadOnlySpan<byte> bytes = new byte[] {1, 2, 3, 4, 5};
+			//ReadOnlySpan<int> ints = MemoryMarshal.Cast<byte, int>(bytes);
+
+			//Console.WriteLine("Press ENTER to start");
+			//Console.ReadLine();
+			//var equalityComparerEqualsTests = new Benchmarks.EqualityComparer_EqualsTests();
+			//equalityComparerEqualsTests.ObjectStructureComparer();
+			////bool cancelled = false;
+			////new Thread(() =>
+			////{
+			////	while (!cancelled)
+			////	{
+			////		equalityComparerEqualsTests.ObjectStructureComparer();
+			////	}
+			////}).Start();
+			//Console.WriteLine("Press ENTER to exit");
+			//Console.ReadLine();
+			////cancelled = true;
+			//return;
+
 			var benchmarks = GetBenchmarkTypes();
 
 			start:

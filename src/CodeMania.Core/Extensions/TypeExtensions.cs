@@ -191,9 +191,11 @@ namespace CodeMania.Core.Extensions
 			    && IsWellKnownPrimitiveOrCollectionOfThesePrimitives(collectionElementType));
 
 		public static PropertyInfo[] GetPublicInstanceProperties([NotNull] this Type type) =>
-			(type ?? throw new ArgumentNullException(nameof(type))).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+			(type ?? throw new ArgumentNullException(nameof(type)))
+				.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
 
 		public static FieldInfo[] GetPublicInstanceFields([NotNull] this Type type) =>
-			(type ?? throw new ArgumentNullException(nameof(type))).GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+			(type ?? throw new ArgumentNullException(nameof(type)))
+				.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
 	}
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using CodeMania.Core.Internals;
-using Common.TestData.TestDataTypes;
+using CodeMania.TestData.TestDataTypes;
 
 namespace CodeMania.Core.Benchmarks.EqualityComparers
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Common.TestData.TestDataTypes
+namespace CodeMania.TestData.TestDataTypes
 {
 	[Serializable]
 	public class TestEntity

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
-using CodeMania.Core.EqualityComparers;
+using CodeMania.Core.EqualityComparers.Specialized;
 using CodeMania.Core.Extensions;
 
 namespace CodeMania.Core

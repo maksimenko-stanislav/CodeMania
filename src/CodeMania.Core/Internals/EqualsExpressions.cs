@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using CodeMania.Core.EqualityComparers;
@@ -13,9 +12,12 @@ namespace CodeMania.Core.Internals
 {
 	public static class EqualsExpressions
 	{
-		public static LambdaExpression CreateEqualsExpression([NotNull] Type itemType)
+		public static LambdaExpression CreateEqualsExpression([NotNull] Type itemType, IEqualityComparisonConfiguration configuration = null)
 		{
 			if (itemType == null) throw new ArgumentNullException(nameof(itemType));
+
+			configuration = configuration ?? EqualityComparisonConfiguration.Default;
+
 			LambdaExpression elementTypeComparer;
 
 			if (itemType.IsEnum)
@@ -24,7 +26,7 @@ namespace CodeMania.Core.Internals
 			}
 			else if (itemType == typeof(string))
 			{
-				elementTypeComparer = CreateForStrings(StringComparison.Ordinal);
+				elementTypeComparer = CreateForStrings(configuration.StringComparisonMode);
 			}
 			else if (itemType.IsBuiltInPrimitive() ||
 			         itemType.IsAssignableFrom(typeof(IEquatable<>).MakeGenericType(itemType)))
@@ -53,74 +55,14 @@ namespace CodeMania.Core.Internals
 
 		private static LambdaExpression GetEqualsExpressionForCollection(Type collectionType, Type elementType)
 		{
-			FieldInfo comparerField;
-			if (collectionType == elementType.MakeArrayType() &&
-			    (comparerField = typeof(PrimitiveTypeArrayEqualityComparers).GetFields()
-				    .FirstOrDefault(x => x.Name == elementType.Name + "ArrayMemoryEqualityComparer")) != null)
-			{
-				return GetEqualsExpressionForArrayOfPrimitiveTypes(collectionType, elementType, comparerField);
-			}
-
 			return GetEqualsExpressionForEnumerable(collectionType, elementType);
 		}
 
-		private static LambdaExpression GetEqualsExpressionForArrayOfPrimitiveTypes([NotNull] Type collectionType,
-			[NotNull] Type elementType, [NotNull] FieldInfo comparerField)
+		private static LambdaExpression GetEqualsExpressionForEnumerable(Type collectionType, Type elementType)
 		{
-			if (comparerField == null) throw new ArgumentNullException(nameof(comparerField));
+			Type comparerType = EqualityComparerTypeProvider.GetCustomEqualityComparerTypeFor(collectionType);
 
-			var arrayType = elementType.MakeArrayType();
-
-			var xArr = Expression.Parameter(arrayType, "xArr");
-			var yArr = Expression.Parameter(arrayType, "yArr");
-
-			var comparerValue = comparerField.GetValue(null) ??
-			                    throw new InvalidOperationException(
-				                    $"Can't get value for comparer of type '{comparerField.FieldType}'.");
-			var comparerType = comparerValue.GetType();
-
-			var equalsMethod = comparerType.GetMethod(nameof(IEqualityComparer.Equals), new[] {arrayType, arrayType})
-			                   ?? throw new InvalidOperationException(
-				                   $"Can't find {nameof(IEqualityComparer.Equals)} method.");
-
-			var comparerExpression = Expression.Field(null, comparerField);
-
-			return Expression.Lambda(
-				typeof(Func<,,>).MakeGenericType(collectionType, collectionType, typeof(bool)),
-				Expression.Call(comparerExpression, equalsMethod, xArr, yArr),
-				xArr, yArr
-			);
-		}
-
-		private static LambdaExpression GetEqualsExpressionForEnumerable(
-			Type collectionType, Type elementType)
-		{
-			Type comparerType;
-
-			if (elementType.MakeArrayType() == collectionType)
-			{
-				comparerType = typeof(ArrayEqualityComparer<>).MakeGenericType(elementType);
-			}
-			else if (typeof(List<>).MakeGenericType(elementType) == collectionType)
-			{
-				comparerType = typeof(ListEqualityComparer<>).MakeGenericType(elementType);
-			}
-			else if (collectionType.IsReadOnlyDictionary(out _, out var keyValuePairType))
-			{
-				comparerType = typeof(DictionaryEqualityComparer<,,>).MakeGenericType(
-					keyValuePairType.GetGenericArguments()[0],
-					keyValuePairType.GetGenericArguments()[1],
-					collectionType);
-			}
-			else
-			{
-				comparerType = typeof(GenericCollectionEqualityComparer<>).MakeGenericType(elementType);
-			}
-
-			// we need to have high performance static instance property with name 'Instance' in each comparer type.
-			// We must not spend time on creating instance of collection comparer.
-			// Ensure that all collection comparers follow this rule.
-			var comparerExpression = Expression.Property(null, comparerType, "Instance");
+			var comparerExpression = Expression.MakeMemberAccess(null, comparerType.GetMember("Default")[0]);
 
 			var xArr = Expression.Parameter(collectionType, "xArr");
 			var yArr = Expression.Parameter(collectionType, "yArr");
@@ -156,7 +98,7 @@ namespace CodeMania.Core.Internals
 				typeof(Func<,,>).MakeGenericType(itemType, itemType, typeof(bool)),
 				Expression.Call(
 					Expression.Property(null, equalityComparerType,
-						nameof(ObjectStructureEqualityComparer<object>.Instance)),
+						nameof(ObjectStructureEqualityComparer<object>.Default)),
 					equalsMethod,
 					x, y),
 				x, y);
@@ -387,34 +329,55 @@ namespace CodeMania.Core.Internals
 
 	public static class EqualsExpressions<T>
 	{
-		public static Expression<Func<T, T, bool>> CreateEqualsExpression([NotNull] MemberInfo memberInfo)
+		public static Expression<Func<T, T, bool>> CreateEqualsExpression([NotNull] MemberInfo memberInfo,
+			IEqualityComparisonConfiguration configuration = null)
 		{
 			if (memberInfo == null) throw new ArgumentNullException(nameof(memberInfo));
 
 			var x = Expression.Parameter(typeof(T), "x");
 			var y = Expression.Parameter(typeof(T), "y");
+			var equalityComparerContext = Expression.Parameter(typeof(EqualityComparerContext), "context");
 
-			if (memberInfo is FieldInfo fieldInfo)
-				return Expression.Lambda<Func<T, T, bool>>(CreateEqualsExpression(fieldInfo, x, y), x, y);
+			Expression body;
+			switch (memberInfo)
+			{
+				case PropertyInfo pi when pi.CanRead:
+					body = CreateEqualsExpression(pi, x, y, equalityComparerContext, configuration);
+					break;
+				case FieldInfo fi when (fi.Attributes & FieldAttributes.Static) != FieldAttributes.Static:
+					body = CreateEqualsExpression(fi, x, y, equalityComparerContext, configuration);
+					break;
+				default:
+					throw new ArgumentException(
+						$"Unsupported member type. Available types are {nameof(FieldInfo)} and {nameof(PropertyInfo)} with read support.",
+						nameof(memberInfo));
+			}
 
-			if (memberInfo is PropertyInfo propertyInfo)
-				return Expression.Lambda<Func<T, T, bool>>(CreateEqualsExpression(propertyInfo, x, y), x, y);
-
-			throw new ArgumentException(
-				$"Unsupported member type. Available types are {nameof(FieldInfo)} and {nameof(PropertyInfo)}.",
-				nameof(memberInfo));
+			return Expression.Lambda<Func<T, T, bool>>(body, x, y, equalityComparerContext);
 		}
 
-		public static Expression CreateEqualsExpression([NotNull] FieldInfo fieldInfo,
-			[NotNull] ParameterExpression x, [NotNull] ParameterExpression y) =>
-			CreateEqualsExpression(fieldInfo, fieldInfo.FieldType, x, y);
+		public static Expression CreateEqualsExpression(
+			[NotNull] FieldInfo fieldInfo,
+			[NotNull] ParameterExpression x,
+			[NotNull] ParameterExpression y,
+			[NotNull] ParameterExpression equalityComparerContext,
+			IEqualityComparisonConfiguration configuration = null) =>
+				CreateEqualsExpression(fieldInfo, fieldInfo.FieldType, x, y, equalityComparerContext, configuration);
 
-		public static Expression CreateEqualsExpression([NotNull] PropertyInfo propertyInfo,
-			[NotNull] ParameterExpression x, [NotNull] ParameterExpression y) =>
-			CreateEqualsExpression(propertyInfo, propertyInfo.PropertyType, x, y);
+		public static Expression CreateEqualsExpression(
+			[NotNull] PropertyInfo propertyInfo,
+			[NotNull] ParameterExpression x,
+			[NotNull] ParameterExpression y,
+			[NotNull] ParameterExpression equalityComparerContext,
+			IEqualityComparisonConfiguration configuration = null) =>
+				CreateEqualsExpression(propertyInfo, propertyInfo.PropertyType, x, y, equalityComparerContext, configuration);
 
-		public static Expression CreateEqualsExpression([NotNull] MemberInfo memberInfo,
-			[NotNull] ParameterExpression x, [NotNull] ParameterExpression y)
+		public static Expression CreateEqualsExpression(
+			[NotNull] MemberInfo memberInfo,
+			[NotNull] ParameterExpression x,
+			[NotNull] ParameterExpression y,
+			[NotNull] ParameterExpression equalityComparerContext,
+			IEqualityComparisonConfiguration configuration = null)
 		{
 			if (memberInfo == null) throw new ArgumentNullException(nameof(memberInfo));
 			if (x == null) throw new ArgumentNullException(nameof(x));
@@ -422,19 +385,24 @@ namespace CodeMania.Core.Internals
 
 			if (memberInfo is FieldInfo fieldInfo)
 			{
-				return CreateEqualsExpression(fieldInfo, fieldInfo.FieldType, x, y);
+				return CreateEqualsExpression(fieldInfo, fieldInfo.FieldType, x, y, equalityComparerContext, configuration);
 			}
 
 			if (memberInfo is PropertyInfo propertyInfo)
 			{
-				return CreateEqualsExpression(propertyInfo, propertyInfo.PropertyType, x, y);
+				return CreateEqualsExpression(propertyInfo, propertyInfo.PropertyType, x, y, equalityComparerContext, configuration);
 			}
 
 			throw new ArgumentException($"Expected {nameof(FieldInfo)} or {nameof(PropertyInfo)}.", nameof(memberInfo));
 		}
 
-		private static Expression CreateEqualsExpression([NotNull] MemberInfo memberInfo, [NotNull] Type memberType,
-			[NotNull] ParameterExpression x, [NotNull] ParameterExpression y)
+		private static Expression CreateEqualsExpression(
+			[NotNull] MemberInfo memberInfo,
+			[NotNull] Type memberType,
+			[NotNull] ParameterExpression x,
+			[NotNull] ParameterExpression y,
+			[NotNull] ParameterExpression equalityComparerContext,
+			IEqualityComparisonConfiguration configuration)
 		{
 			if (memberInfo == null)
 				throw new ArgumentNullException(nameof(memberInfo));
@@ -445,20 +413,17 @@ namespace CodeMania.Core.Internals
 			if (y == null)
 				throw new ArgumentNullException(nameof(y));
 			if (!typeof(T).IsAssignableFrom(x.Type))
-				throw new ArgumentException($"Expected that parameter returns type assignable from {typeof(T)}.",
-					nameof(x));
+				throw new ArgumentException($"Expected that parameter returns type assignable from {typeof(T)}.", nameof(x));
 			if (!typeof(T).IsAssignableFrom(x.Type))
-				throw new ArgumentException($"Expected that parameter returns type assignable from {typeof(T)}.",
-					nameof(y));
+				throw new ArgumentException($"Expected that parameter returns type assignable from {typeof(T)}.", nameof(y));
 
-			// TODO: Allow to configure StringComparison
-			var stringComparison = StringComparison.Ordinal;
+			configuration = configuration ?? EqualityComparisonConfiguration.Default;
 
 			Expression equalsFunc;
 
 			if (memberType == typeof(string))
 			{
-				equalsFunc = CreateForStrings(memberInfo, stringComparison, x, y);
+				equalsFunc = CreateForStrings(memberInfo, configuration.StringComparisonMode, x, y);
 			}
 			else if (memberType.IsEnum)
 			{
@@ -477,119 +442,39 @@ namespace CodeMania.Core.Internals
 			else if (memberType.IsCollection(out Type elementType) ||
 			         memberType.IsReadOnlyDictionary(out _, out elementType))
 			{
-				equalsFunc = GetEqualsExpressionForCollection(memberInfo, memberType, elementType, x, y);
+				equalsFunc = GetEqualsExpressionForEnumerable(memberInfo, memberType, x, y, equalityComparerContext);
 			}
-			// TODO: what about value types (structs) without IEquatable support? I think we need to use default equality comparer
 			else
 			{
-				equalsFunc = CreateForObjectStructureEqualityComparer(memberInfo, memberType, x, y);
+				equalsFunc = CreateForObjectStructureEqualityComparer(memberInfo, memberType, x, y, equalityComparerContext);
 			}
 
 			return equalsFunc;
 		}
 
-		private static Expression GetEqualsExpressionForCollection(MemberInfo memberInfo, Type collectionType,
-			Type elementType, ParameterExpression x, ParameterExpression y)
-		{
-			FieldInfo comparerField;
-			if (collectionType == elementType.MakeArrayType() &&
-			    (comparerField = typeof(PrimitiveTypeArrayEqualityComparers).GetFields()
-				    .FirstOrDefault(field => field.Name == elementType.Name + "ArrayMemoryEqualityComparer")) != null)
-			{
-				return GetEqualsExpressionForArrayOfPrimitiveTypes(memberInfo, elementType, comparerField, x, y);
-			}
-
-			return GetEqualsExpressionForEnumerable(memberInfo, collectionType, elementType, x, y);
-		}
-
-		private static BlockExpression GetEqualsExpressionForArrayOfPrimitiveTypes(MemberInfo memberInfo,
-			Type elementType, [NotNull] FieldInfo comparerField,
-			ParameterExpression x, ParameterExpression y)
-		{
-			if (comparerField == null) throw new ArgumentNullException(nameof(comparerField));
-
-			var arrayType = elementType.MakeArrayType();
-
-			var xArr = Expression.Variable(arrayType, "xArr");
-			var yArr = Expression.Variable(arrayType, "yArr");
-
-			var comparerValue = comparerField.GetValue(null) ??
-			                    throw new InvalidOperationException(
-				                    $"Can't get value for comparer of type '{comparerField.FieldType}'.");
-			var comparerType = comparerValue.GetType();
-
-			var equalsMethod = comparerType.GetMethod(nameof(IEqualityComparer.Equals), new[] {arrayType, arrayType})
-			                   ?? throw new InvalidOperationException(
-				                   $"Can't find {nameof(IEqualityComparer.Equals)} method.");
-
-			var comparerExpression = Expression.Field(null, comparerField);
-
-			return Expression.Block(
-				// return type
-				typeof(bool),
-				// variables declaration
-				new[] {xArr, yArr},
-				// var xArr = (PrimitiveType[]) x.CustomProperty;
-				Expression.Assign(xArr, Expression.Convert(Expression.PropertyOrField(x, memberInfo.Name), arrayType)),
-				// var yArr = (PrimitiveType[]) y.CustomProperty;
-				Expression.Assign(yArr, Expression.Convert(Expression.PropertyOrField(y, memberInfo.Name), arrayType)),
-				// return PrimitiveTypeArrayEqualityComparers.ComparerField.Equals(xArr, yArr);
-				Expression.Call(comparerExpression, equalsMethod, xArr, yArr)
-			);
-		}
-
-		private static BlockExpression GetEqualsExpressionForEnumerable(
+		private static MethodCallExpression GetEqualsExpressionForEnumerable(
 			MemberInfo memberInfo,
-			Type collectionType, Type elementType, ParameterExpression x, ParameterExpression y)
+			Type collectionType, ParameterExpression x, ParameterExpression y, ParameterExpression equalityComparerContext)
 		{
-			Type comparerType;
+			Type comparerType = EqualityComparerTypeProvider.GetCustomEqualityComparerTypeFor(collectionType);
 
-			if (elementType.MakeArrayType() == collectionType)
-			{
-				comparerType = typeof(ArrayEqualityComparer<>).MakeGenericType(elementType);
-			}
-			else if (typeof(List<>).MakeGenericType(elementType) == collectionType)
-			{
-				comparerType = typeof(ListEqualityComparer<>).MakeGenericType(elementType);
-			}
-			else if (collectionType.IsReadOnlyDictionary(out _, out var keyValuePairType))
-			{
-				comparerType = typeof(DictionaryEqualityComparer<,,>).MakeGenericType(
-					keyValuePairType.GetGenericArguments()[0],
-					keyValuePairType.GetGenericArguments()[1],
-					collectionType);
-			}
-			else
-			{
-				comparerType = typeof(GenericCollectionEqualityComparer<>).MakeGenericType(elementType);
-			}
-
-			// we need to have high performance static instance property with name 'Instance' in each comparer type.
+			// we need to have high performance static instance property with name 'Default' in each comparer type.
 			// We must not spend time on creating instance of collection comparer.
 			// Ensure that all collection comparers follow this rule.
-			var comparerExpression = Expression.Property(null, comparerType, "Instance");
+			var comparerExpression = Expression.MakeMemberAccess(null, comparerType.GetMember("Default")[0]);
 
-			var xArr = Expression.Variable(collectionType, "xArr");
-			var yArr = Expression.Variable(collectionType, "yArr");
-
-			var equalsMethod =
-				comparerType.GetMethod(nameof(IEqualityComparer.Equals), new[] {collectionType, collectionType})
-				?? throw new InvalidOperationException($"Can't find {nameof(IEqualityComparer.Equals)} method.");
-
-			return Expression.Block(
-				// return type
-				typeof(bool),
-				// variables declaration
-				new[] {xArr, yArr},
-				// var xArr = (CollectionType) x.CustomProperty;
-				Expression.Assign(xArr,
-					Expression.Convert(Expression.PropertyOrField(x, memberInfo.Name), collectionType)),
-				// var yArr = (CollectionType) y.CustomProperty;
-				Expression.Assign(yArr,
-					Expression.Convert(Expression.PropertyOrField(y, memberInfo.Name), collectionType)),
-				// return CollectionComparer<CollectionType>.Instance.Equals(xArr, yArr);
-				Expression.Call(comparerExpression, equalsMethod, xArr, yArr)
-			);
+			return comparerType.IsGenericAssignable(typeof(IReferenceTypeEqualityComparer<>))
+				? Expression.Call(
+					comparerExpression,
+					comparerType.GetMethod(nameof(IEqualityComparer.Equals), new[] { collectionType, collectionType, typeof(EqualityComparerContext) }),
+					Expression.MakeMemberAccess(x, memberInfo),
+					Expression.MakeMemberAccess(y, memberInfo),
+					equalityComparerContext)
+				: Expression.Call(
+					comparerExpression,
+					comparerType.GetMethod(nameof(IEqualityComparer.Equals), new[] { collectionType, collectionType }),
+					Expression.MakeMemberAccess(x, memberInfo),
+					Expression.MakeMemberAccess(y, memberInfo));
 		}
 
 		private static MethodCallExpression CreateForDefaultEqualityComparer(
@@ -608,16 +493,16 @@ namespace CodeMania.Core.Internals
 			return Expression.Call(
 				Expression.Property(null, equalityComparerType, nameof(EqualityComparer<T>.Default)),
 				equalsMethod,
-				Expression.PropertyOrField(x, memberInfo.Name),
-				Expression.PropertyOrField(y, memberInfo.Name));
+				Expression.MakeMemberAccess(x, memberInfo),
+				Expression.MakeMemberAccess(y, memberInfo));
 		}
 
 		private static MethodCallExpression CreateForObjectStructureEqualityComparer(
-			MemberInfo memberInfo, Type memberType, ParameterExpression x, ParameterExpression y)
+			MemberInfo memberInfo, Type memberType, ParameterExpression x, ParameterExpression y, ParameterExpression equalityComparerContext)
 		{
 			var equalityComparerType = typeof(ObjectStructureEqualityComparer<>).MakeGenericType(memberType);
 
-			var equalsMethod = equalityComparerType.GetMethod(nameof(Equals), new[] {memberType, memberType});
+			var equalsMethod = equalityComparerType.GetMethod(nameof(Equals), new[] {memberType, memberType, typeof(EqualityComparerContext)});
 
 			if (equalsMethod == null)
 			{
@@ -626,10 +511,11 @@ namespace CodeMania.Core.Internals
 			}
 
 			return Expression.Call(
-				Expression.Property(null, equalityComparerType, nameof(ObjectStructureEqualityComparer<T>.Instance)),
+				Expression.Property(null, equalityComparerType, nameof(ObjectStructureEqualityComparer<object>.Default)),
 				equalsMethod,
-				Expression.PropertyOrField(x, memberInfo.Name),
-				Expression.PropertyOrField(y, memberInfo.Name));
+				Expression.MakeMemberAccess(x, memberInfo),
+				Expression.MakeMemberAccess(y, memberInfo),
+				equalityComparerContext);
 		}
 
 		private static Expression CreateForPrimitiveType(MemberInfo memberInfo,
@@ -638,8 +524,8 @@ namespace CodeMania.Core.Internals
 			try
 			{
 				return Expression.Equal(
-					Expression.PropertyOrField(x, memberInfo.Name),
-					Expression.PropertyOrField(y, memberInfo.Name));
+					Expression.MakeMemberAccess(x, memberInfo),
+					Expression.MakeMemberAccess(y, memberInfo));
 			}
 			catch (Exception)
 			{
@@ -659,9 +545,9 @@ namespace CodeMania.Core.Internals
 			}
 
 			return Expression.Call(
-				Expression.PropertyOrField(x, memberInfo.Name),
+				Expression.MakeMemberAccess(x, memberInfo),
 				equalsMethod,
-				Expression.PropertyOrField(y, memberInfo.Name));
+				Expression.MakeMemberAccess(y, memberInfo));
 		}
 
 		private static Expression CreateForStrings(MemberInfo memberInfo,

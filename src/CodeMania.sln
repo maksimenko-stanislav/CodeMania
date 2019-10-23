@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeMania.Core.Benchmarks",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeMania.Core.UnitTests", "CodeMania.Core.UnitTests\CodeMania.Core.UnitTests.csproj", "{9486E037-D121-49C1-B5C6-E0F2679F86E1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeMania.Core.Serialization", "CodeMania.Core.Serialization\CodeMania.Core.Serialization.csproj", "{FF72237C-5346-46A9-B2EA-9C0A8F0CF7E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeMania.Core.Serialization.UnitTests", "CodeMania.Core.Serialization.UnitTests\CodeMania.Core.Serialization.UnitTests.csproj", "{90ED9D95-B5FF-46D8-9315-311D4A1C8602}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{9486E037-D121-49C1-B5C6-E0F2679F86E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9486E037-D121-49C1-B5C6-E0F2679F86E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9486E037-D121-49C1-B5C6-E0F2679F86E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF72237C-5346-46A9-B2EA-9C0A8F0CF7E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF72237C-5346-46A9-B2EA-9C0A8F0CF7E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF72237C-5346-46A9-B2EA-9C0A8F0CF7E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF72237C-5346-46A9-B2EA-9C0A8F0CF7E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90ED9D95-B5FF-46D8-9315-311D4A1C8602}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90ED9D95-B5FF-46D8-9315-311D4A1C8602}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90ED9D95-B5FF-46D8-9315-311D4A1C8602}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90ED9D95-B5FF-46D8-9315-311D4A1C8602}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
