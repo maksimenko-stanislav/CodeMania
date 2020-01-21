@@ -68,7 +68,6 @@ namespace CodeMania.Core.Benchmarks.EqualityComparers
 
 					if (!AreCollectionsEquals(xCollection, yCollection, ref visitedList))
 					{
-						Debug.Print("Values of property or field {0}.{1} are not equals.", typeof(T), property.Name);
 						return false;
 					}
 
@@ -85,8 +84,6 @@ namespace CodeMania.Core.Benchmarks.EqualityComparers
 				if (!xValue.GetType().IsPrimitive && !GetOrCreateEqualityComparer(xValue.GetType()).Equals(xValue, yValue))
 					return false;
 			}
-
-			Debug.Assert(i == _properties.Length, "i == _properties.Length");
 
 			return true;
 		}
@@ -159,17 +156,9 @@ namespace CodeMania.Core.Benchmarks.EqualityComparers
 				(yEnumerator as IDisposable)?.Dispose();
 			}
 
-#if DEBUG
-			// ReSharper disable PossibleMultipleEnumeration
-			int xCount = x.OfType<object>().Count();
-			int yCount = y.OfType<object>().Count();
-			// ReSharper restore PossibleMultipleEnumeration
-			Debug.Assert(xCount == yCount, "xCount == yCount");
-#endif
-
 			return true;
 		}
-		
+
 		public override int GetHashCode(T obj)
 		{
 			if (obj == null) return 0;
@@ -226,18 +215,8 @@ namespace CodeMania.Core.Benchmarks.EqualityComparers
 
 			try
 			{
-#if DEBUG
-				// ReSharper disable once PossibleMultipleEnumeration
-				int count = collection.OfType<object>().Count();
-
-				int counter = 0;
-#endif
 				while (enumerator.MoveNext())
 				{
-#if DEBUG
-					counter++;
-#endif
-
 					var value = enumerator.Current;
 
 					if (value == null)
@@ -270,10 +249,6 @@ namespace CodeMania.Core.Benchmarks.EqualityComparers
 					// now we know, that value is not collections, so consider it as "complex" type.
 					hashCode = HashHelper.CombineHashCodes(hashCode * 397, GetOrCreateEqualityComparer(type).GetHashCode(value));
 				}
-
-#if DEBUG
-				Debug.Assert(counter == count, "counter == count");
-#endif
 			}
 			finally
 			{
