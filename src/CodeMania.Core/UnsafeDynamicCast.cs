@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using CodeMania.Core.Utils;
 
 namespace CodeMania.Core
 {
@@ -36,11 +37,7 @@ namespace CodeMania.Core
 					if (convertMethod != null)
 					{
 						// source => Convert.ToXXX(source)
-						CastFunc = ExpressionCompiler.Default.Compile(
-							Expression.Lambda<Func<TFrom, TTo>>(
-								Expression.Call(null, convertMethod, sourceParam),
-								sourceParam
-						));
+						CastFunc = DelegateHelper.CreateDelegate<Func<TFrom, TTo>>(convertMethod);
 					}
 					else
 					{

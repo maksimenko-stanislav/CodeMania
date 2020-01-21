@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Common.TestData.TestDataTypes;
+using CodeMania.TestData.TestDataTypes;
 
 namespace CodeMania.Core.Benchmarks.EqualityComparers
 {

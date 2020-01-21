@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using CodeMania.Core.EqualityComparers;
@@ -40,7 +39,7 @@ namespace CodeMania.Core.Internals
 			else if (itemType.IsCollection(out Type elementType) ||
 			         itemType.IsReadOnlyDictionary(out _, out elementType))
 			{
-				elementTypeComparer = GetHashCodeExpressionForCollection(itemType, elementType);
+				elementTypeComparer = GetHashCodeExpressionForEnumerable(itemType);
 			}
 			// TODO: what about value types (structs) without IEquatable support? I thing we need to use default equality comparer
 			else
@@ -51,75 +50,14 @@ namespace CodeMania.Core.Internals
 			return elementTypeComparer;
 		}
 
-		private static LambdaExpression GetHashCodeExpressionForCollection(Type collectionType, Type elementType)
+		private static LambdaExpression GetHashCodeExpressionForEnumerable(Type collectionType)
 		{
-			FieldInfo comparerField;
-			if (!elementType.IsArray && collectionType == elementType.MakeArrayType() &&
-			    (comparerField = typeof(PrimitiveTypeArrayEqualityComparers).GetFields()
-				    .FirstOrDefault(x => x.Name == elementType.Name + "ArrayMemoryEqualityComparer")) != null)
-			{
-				return GetHashCodeExpressionForArrayOfPrimitiveTypes(collectionType, elementType, comparerField);
-			}
+			Type comparerType = EqualityComparerTypeProvider.GetCustomEqualityComparerTypeFor(collectionType);
 
-			return GetHashCodeExpressionForEnumerable(collectionType, elementType);
-		}
-
-		private static LambdaExpression GetHashCodeExpressionForArrayOfPrimitiveTypes([NotNull] Type collectionType,
-			[NotNull] Type elementType, [NotNull] FieldInfo comparerField)
-		{
-			if (comparerField == null) throw new ArgumentNullException(nameof(comparerField));
-
-			var arrayType = elementType.MakeArrayType();
-
-			var xArr = Expression.Parameter(arrayType, "xArr");
-
-			var comparerValue = comparerField.GetValue(null) ??
-			                    throw new InvalidOperationException(
-				                    $"Can't get value for comparer of type '{comparerField.FieldType}'.");
-			var comparerType = comparerValue.GetType();
-
-			var getHashCodeMethod = comparerType.GetMethod(nameof(IEqualityComparer.GetHashCode), new[] {arrayType})
-			                        ?? throw new InvalidOperationException(
-				                        $"Can't find {nameof(IEqualityComparer.GetHashCode)} method.");
-
-			var comparerExpression = Expression.Field(null, comparerField);
-
-			return Expression.Lambda(
-				typeof(Func<,>).MakeGenericType(collectionType, typeof(int)),
-				Expression.Call(comparerExpression, getHashCodeMethod, xArr),
-				xArr
-			);
-		}
-
-		private static LambdaExpression GetHashCodeExpressionForEnumerable(
-			Type collectionType, Type elementType)
-		{
-			Type comparerType;
-
-			if (elementType.MakeArrayType() == collectionType)
-			{
-				comparerType = typeof(ArrayEqualityComparer<>).MakeGenericType(elementType);
-			}
-			else if (typeof(List<>).MakeGenericType(elementType) == collectionType)
-			{
-				comparerType = typeof(ListEqualityComparer<>).MakeGenericType(elementType);
-			}
-			else if (collectionType.IsReadOnlyDictionary(out _, out var keyValuePairType))
-			{
-				comparerType = typeof(DictionaryEqualityComparer<,,>).MakeGenericType(
-					keyValuePairType.GetGenericArguments()[0],
-					keyValuePairType.GetGenericArguments()[1],
-					collectionType);
-			}
-			else
-			{
-				comparerType = typeof(GenericCollectionEqualityComparer<>).MakeGenericType(elementType);
-			}
-
-			// we need to have high performance static instance property with name 'Instance' in each comparer type.
+			// we need to have high performance static instance property with name 'Default' in each comparer type.
 			// We must not spend time on creating instance of collection comparer.
 			// Ensure that all collection comparers follow this rule.
-			var comparerExpression = Expression.Property(null, comparerType, "Instance");
+			var comparerExpression = Expression.MakeMemberAccess(null, comparerType.GetMember("Default")[0]);
 
 			var xArr = Expression.Parameter(collectionType, "xArr");
 
@@ -131,8 +69,7 @@ namespace CodeMania.Core.Internals
 				typeof(Func<,>).MakeGenericType(collectionType, typeof(int)),
 				Expression.Call(comparerExpression, getHashCodeMethod, xArr),
 				// lambda arguments: (x, y) => <body>
-				xArr
-			);
+				xArr);
 		}
 
 		// (SomeType x) => EqualityComparer<SomeType>.Default.GetHashCode(x)
@@ -140,7 +77,7 @@ namespace CodeMania.Core.Internals
 		{
 			var x = Expression.Parameter(type, "x");
 
-			var body = CreateFoObjectStructureEqualityComparerExpressionBody(type, x);
+			var body = CreateForObjectStructureEqualityComparerExpressionBody(type, x);
 
 			return Expression.Lambda(
 				typeof(Func<,>).MakeGenericType(type, typeof(int)),
@@ -148,7 +85,7 @@ namespace CodeMania.Core.Internals
 				x);
 		}
 
-		private static MethodCallExpression CreateFoObjectStructureEqualityComparerExpressionBody([NotNull] Type type,
+		private static MethodCallExpression CreateForObjectStructureEqualityComparerExpressionBody([NotNull] Type type,
 			ParameterExpression x)
 		{
 			if (type == null) throw new ArgumentNullException(nameof(type));
@@ -164,7 +101,7 @@ namespace CodeMania.Core.Internals
 
 			return Expression.Call(
 				Expression.Property(null, equalityComparerType,
-					nameof(ObjectStructureEqualityComparer<object>.Instance)),
+				nameof(ObjectStructureEqualityComparer<object>.Default)),
 				getHashCodeMethod,
 				x);
 		}
@@ -375,11 +312,12 @@ namespace CodeMania.Core.Internals
 			if (memberInfo == null) throw new ArgumentNullException(nameof(memberInfo));
 
 			var x = Expression.Parameter(typeof(T), "x");
+			var equalityComparerContext = Expression.Parameter(typeof(EqualityComparerContext), "context");
 
-			return Expression.Lambda<Func<T, int>>(CreateHashCodeExpression(memberInfo, x), x);
+			return Expression.Lambda<Func<T, int>>(CreateHashCodeExpression(memberInfo, x, equalityComparerContext), x, equalityComparerContext);
 		}
 
-		public static Expression CreateHashCodeExpression([NotNull] MemberInfo memberInfo, [NotNull] ParameterExpression x)
+		public static Expression CreateHashCodeExpression([NotNull] MemberInfo memberInfo, [NotNull] ParameterExpression x, [NotNull] ParameterExpression equalityComparerContext)
 		{
 			if (memberInfo == null)
 				throw new ArgumentNullException(nameof(memberInfo));
@@ -406,7 +344,7 @@ namespace CodeMania.Core.Internals
 
 			if (memberType == typeof(string))
 			{
-				getHashCodeFunc = CreateForStrings(memberInfo, memberType, x);
+				getHashCodeFunc = CreateForStrings(memberInfo, x);
 			}
 			else if (memberType.IsEnum)
 			{
@@ -425,98 +363,43 @@ namespace CodeMania.Core.Internals
 			else if (memberType.IsCollection(out Type elementType) ||
 			         memberType.IsReadOnlyDictionary(out _, out elementType))
 			{
-				getHashCodeFunc = GetHashCodeExpressionForCollection(memberInfo, memberType, elementType, x);
+				getHashCodeFunc = GetHashCodeExpressionForEnumerable(memberInfo, memberType, elementType, x, equalityComparerContext);
 			}
 			// TODO: what about value types (structs) without IEquatable support? I thing we need to use default equality comparer
 			else
 			{
-				getHashCodeFunc = CreateForObjectStructureEqualityComparer(memberInfo, memberType, x);
+				getHashCodeFunc = CreateForObjectStructureEqualityComparer(memberInfo, memberType, x, equalityComparerContext);
 			}
 
 			return getHashCodeFunc;
 		}
 
-		private static Expression GetHashCodeExpressionForCollection(MemberInfo memberInfo,
-			Type collectionType, Type elementType, ParameterExpression x)
-		{
-			FieldInfo comparerField;
-			if (!elementType.IsArray && collectionType == elementType.MakeArrayType() &&
-			    (comparerField = typeof(PrimitiveTypeArrayEqualityComparers).GetFields().FirstOrDefault(field => field.Name == elementType.Name + "ArrayMemoryEqualityComparer")) != null)
-			{
-				return GetHashCodeExpressionForArrayOfPrimitiveTypes(memberInfo, elementType, comparerField, x);
-			}
-
-			return GetHashCodeExpressionForEnumerable(memberInfo, collectionType, elementType, x);
-		}
-
-		private static Expression GetHashCodeExpressionForArrayOfPrimitiveTypes(MemberInfo memberInfo,
-			Type elementType, [NotNull] FieldInfo comparerField, ParameterExpression x)
-		{
-			if (comparerField == null) throw new ArgumentNullException(nameof(comparerField));
-
-			var arrayType = elementType.MakeArrayType();
-
-			var comparerValue = comparerField.GetValue(null) ??
-			                    throw new InvalidOperationException(
-				                    $"Can't get value for comparer of type '{comparerField.FieldType}'.");
-			var comparerType = comparerValue.GetType();
-
-			var getHashCodeMethod = comparerType.GetMethod(nameof(IEqualityComparer.GetHashCode), new[] { arrayType })
-			                        ?? throw new InvalidOperationException(
-				                        $"Can't find {nameof(IEqualityComparer.GetHashCode)} method.");
-
-			var comparerExpression = Expression.Field(null, comparerField);
-
-			return Expression.Call(
-				comparerExpression,
-				getHashCodeMethod,
-				Expression.Convert(
-					Expression.PropertyOrField(x, memberInfo.Name),
-					arrayType));
-		}
-
 		private static MethodCallExpression GetHashCodeExpressionForEnumerable(MemberInfo memberInfo,
-			Type collectionType, Type elementType, ParameterExpression x)
+			Type collectionType, Type elementType, ParameterExpression x, ParameterExpression equalityComparerContext)
 		{
-			Type comparerType;
+			Type comparerType = EqualityComparerTypeProvider.GetCustomEqualityComparerTypeFor(collectionType);
 
-			if (elementType.MakeArrayType() == collectionType)
-			{
-				comparerType = typeof(ArrayEqualityComparer<>).MakeGenericType(elementType);
-			}
-			else if (typeof(List<>).MakeGenericType(elementType) == collectionType)
-			{
-				comparerType = typeof(ListEqualityComparer<>).MakeGenericType(elementType);
-			}
-			else if (collectionType.IsReadOnlyDictionary(out _, out var keyValuePairType))
-			{
-				comparerType = typeof(DictionaryEqualityComparer<,,>).MakeGenericType(
-					keyValuePairType.GetGenericArguments()[0],
-					keyValuePairType.GetGenericArguments()[1],
-					collectionType);
-			}
-			else
-			{
-				comparerType = typeof(GenericCollectionEqualityComparer<>).MakeGenericType(elementType);
-			}
-
-			// we need to have high performance static instance property with name 'Instance' in each comparer type.
+			// we need to have high performance static instance property with name 'Default' in each comparer type.
 			// We must not spend time on creating instance of collection comparer.
 			// Ensure that all collection comparers follow this rule.
-			var comparerExpression = Expression.Property(null, comparerType, "Instance");
+			var comparerExpression = Expression.MakeMemberAccess(null, comparerType.GetMember("Default")[0]);
 
-			var getHashCodeMethod =
-				comparerType.GetMethod(nameof(IEqualityComparer.GetHashCode), new[] { collectionType })
-				?? throw new InvalidOperationException($"Can't find {nameof(IEqualityComparer.GetHashCode)} method.");
-
-			return Expression.Call(
-				comparerExpression,
-				getHashCodeMethod,
-				Expression.Convert(Expression.PropertyOrField(x, memberInfo.Name), collectionType));
+			return comparerType.IsGenericAssignable(typeof(IReferenceTypeEqualityComparer<>))
+				? Expression.Call(
+					comparerExpression,
+					comparerType.GetMethod(nameof(IEqualityComparer.GetHashCode), new[] { collectionType, typeof(EqualityComparerContext) }),
+					Expression.MakeMemberAccess(x, memberInfo),
+					equalityComparerContext)
+				: Expression.Call(
+					comparerExpression,
+					comparerType.GetMethod(nameof(IEqualityComparer.GetHashCode), new[] { collectionType }),
+					Expression.MakeMemberAccess(x, memberInfo));
 		}
 
-		private static MethodCallExpression CreateForDefaultEqualityComparer(MemberInfo memberInfo,
-			Type memberType, ParameterExpression x)
+		private static MethodCallExpression CreateForDefaultEqualityComparer(
+			MemberInfo memberInfo,
+			Type memberType,
+			ParameterExpression x)
 		{
 			var equalityComparerType = typeof(EqualityComparer<>).MakeGenericType(memberType);
 
@@ -535,11 +418,14 @@ namespace CodeMania.Core.Internals
 		}
 
 		private static MethodCallExpression CreateForObjectStructureEqualityComparer(
-			MemberInfo memberInfo, Type memberType, ParameterExpression x)
+			MemberInfo memberInfo,
+			Type memberType,
+			ParameterExpression x,
+			ParameterExpression equalityComparerContext)
 		{
 			var equalityComparerType = typeof(ObjectStructureEqualityComparer<>).MakeGenericType(memberType);
 
-			var getHashCodeMethod = equalityComparerType.GetMethod(nameof(GetHashCode), new[] {memberType});
+			var getHashCodeMethod = equalityComparerType.GetMethod(nameof(GetHashCode), new[] {memberType, typeof(EqualityComparerContext)});
 
 			if (getHashCodeMethod == null)
 			{
@@ -548,13 +434,16 @@ namespace CodeMania.Core.Internals
 			}
 
 			return Expression.Call(
-				Expression.Property(null, equalityComparerType, nameof(ObjectStructureEqualityComparer<T>.Instance)),
+				Expression.Property(null, equalityComparerType, nameof(ObjectStructureEqualityComparer<object>.Default)),
 				getHashCodeMethod,
-				Expression.PropertyOrField(x, memberInfo.Name));
+				Expression.PropertyOrField(x, memberInfo.Name),
+				equalityComparerContext);
 		}
 
-		private static Expression CreateForBuiltInGetHashCodeMethod(MemberInfo memberInfo,
-			Type memberType, ParameterExpression x)
+		private static Expression CreateForBuiltInGetHashCodeMethod(
+			MemberInfo memberInfo,
+			Type memberType,
+			ParameterExpression x)
 		{
 			switch (Type.GetTypeCode(memberType))
 			{
@@ -578,8 +467,7 @@ namespace CodeMania.Core.Internals
 			return Expression.Call(Expression.PropertyOrField(x, memberInfo.Name), getHashCodeMethod);
 		}
 
-		private static ConditionalExpression CreateForStrings(MemberInfo memberInfo, Type memberType,
-			ParameterExpression x)
+		private static ConditionalExpression CreateForStrings(MemberInfo memberInfo, ParameterExpression x)
 		{
 			var getHashCodeMethod = typeof(string).GetMethod(nameof(GetHashCode), new Type[0]);
 
@@ -602,8 +490,7 @@ namespace CodeMania.Core.Internals
 				Expression.Constant(0, typeof(int)));
 		}
 
-		private static MethodCallExpression CreateForEnums(MemberInfo memberInfo, Type memberType,
-			ParameterExpression x)
+		private static MethodCallExpression CreateForEnums(MemberInfo memberInfo, Type memberType, ParameterExpression x)
 		{
 			if (!memberType.IsEnum)
 			{
@@ -629,8 +516,7 @@ namespace CodeMania.Core.Internals
 				getHashMethod);
 		}
 
-		private static ConditionalExpression CreateForNullableEnums(MemberInfo memberInfo,
-			Type memberType, ParameterExpression x)
+		private static ConditionalExpression CreateForNullableEnums(MemberInfo memberInfo, Type memberType, ParameterExpression x)
 		{
 			var nullableUnderlyingType = Nullable.GetUnderlyingType(memberType);
 

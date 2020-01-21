@@ -2,11 +2,11 @@
 
 namespace CodeMania.Core.Internals
 {
-    // TODO: Use System.HashCode after moving to netstandard 2.1
-    /// <summary>
-    /// Class contains helper methods for hash code calculations.
-    /// </summary>
-    public static class HashHelper
+	// TODO: Use System.HashCode after moving to netstandard 2.1
+	/// <summary>
+	/// Class contains helper methods for hash code calculations.
+	/// </summary>
+	public static class HashHelper
 	{
 		public const int HashSeed = 5381; // (obtained from String.GetHashCode implementation)
 

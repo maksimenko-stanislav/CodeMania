@@ -9,6 +9,8 @@ namespace CodeMania.UnitTests.EqualityComparers
 	[TestFixture]
 	public abstract class EqualityComparerTestsBase<T>
 	{
+		
+
 		public class TestCase : TestCaseData
 		{
 			public TestCase(T first, T second, bool areEquals) : base(first, second, areEquals)

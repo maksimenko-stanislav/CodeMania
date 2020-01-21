@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Common.TestData.TestDataTypes
+namespace CodeMania.TestData.TestDataTypes
 {
 	[Serializable]
 	public enum ByteEnum : byte

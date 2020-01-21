@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using CodeMania.Core.EqualityComparers;
+using CodeMania.Core.EqualityComparers.Common.ReferenceType;
 using NUnit.Framework;
 
 namespace CodeMania.UnitTests.EqualityComparers
@@ -7,7 +7,7 @@ namespace CodeMania.UnitTests.EqualityComparers
 	[TestFixture]
 	public class ArrayOfIntArrayEqualityComparerTests : EqualityComparerTestsBase<int[][]>
 	{
-		public ArrayOfIntArrayEqualityComparerTests() : base(ArrayEqualityComparer<int[]>.Instance)
+		public ArrayOfIntArrayEqualityComparerTests() : base(ReferenceTypeArrayEqualityComparer<int[]>.Default)
 		{
 		}
 

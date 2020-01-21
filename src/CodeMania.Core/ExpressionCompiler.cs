@@ -5,7 +5,7 @@ namespace CodeMania.Core
 	public static class ExpressionCompiler
 	{
 		private static IExpressionCompiler _default =
-#if NETSTANDARD2_0
+#if NETSTANDARD2_0 || NETCOREAPP
 			DefaultExpressionCompiler.Instance;
 #else
 			new DynamicMethodExpressionCompiler();

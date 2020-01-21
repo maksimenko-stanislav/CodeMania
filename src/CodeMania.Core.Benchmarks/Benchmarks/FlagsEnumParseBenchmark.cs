@@ -1,6 +1,6 @@
 ﻿using System;
 using BenchmarkDotNet.Attributes;
-using Common.TestData.TestDataTypes;
+using CodeMania.TestData.TestDataTypes;
 
 namespace CodeMania.Core.Benchmarks.Benchmarks
 {

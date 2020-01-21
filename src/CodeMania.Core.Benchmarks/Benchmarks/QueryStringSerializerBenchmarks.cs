@@ -3,7 +3,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using BenchmarkDotNet.Attributes;
 using CodeMania.Core.Benchmarks.Serializers;
-using CodeMania.Core.Serialization;
+using CodeMania.Core.Serialization.QueryString;
 
 namespace CodeMania.Core.Benchmarks.Benchmarks
 {

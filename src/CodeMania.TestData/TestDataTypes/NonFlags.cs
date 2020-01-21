@@ -1,4 +1,4 @@
-﻿namespace Common.TestData.TestDataTypes
+﻿namespace CodeMania.TestData.TestDataTypes
 {
     public enum NonFlags
     {

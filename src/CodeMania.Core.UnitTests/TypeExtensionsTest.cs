@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using CodeMania.Core;
-using CodeMania.Core.EqualityComparers;
 using CodeMania.Core.Extensions;
 using NUnit.Framework;
 

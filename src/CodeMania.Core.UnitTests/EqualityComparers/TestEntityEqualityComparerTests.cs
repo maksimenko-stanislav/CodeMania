@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
 using CodeMania.Core.EqualityComparers;
-using Common.TestData.TestDataTypes;
+using CodeMania.TestData.TestDataTypes;
 using NUnit.Framework;
 
 namespace CodeMania.UnitTests.EqualityComparers
@@ -11,6 +11,24 @@ namespace CodeMania.UnitTests.EqualityComparers
 	[TestFixture]
 	public class TestEntityEqualityComparerTests : EqualityComparerTestsBase<TestEntity>
 	{
+		public class Sample
+		{
+			public int Id { get; set; }
+			public Sample Parent { get; set; }
+		}
+
+		[Test]
+		public void StackOverflow()
+		{
+			var sample1 = new Sample { Id = 1, Parent = new Sample() };
+			sample1.Parent = sample1;
+			var sample2 = new Sample { Id = 1, Parent = null };
+
+			Assert.IsFalse(ObjectStructureEqualityComparer<Sample>.Default.Equals(sample1, sample2));
+			Assert.IsFalse(ObjectStructureEqualityComparer<Sample>.Default.Equals(sample2, sample1));
+		}
+
+
 		public TestEntityEqualityComparerTests() : base(new ObjectStructureEqualityComparer<TestEntity>())
 		{
 		}
