@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CodeMania.Core.EqualityComparers.Specialized;
 using NUnit.Framework;
 
 namespace CodeMania.UnitTests.EqualityComparers

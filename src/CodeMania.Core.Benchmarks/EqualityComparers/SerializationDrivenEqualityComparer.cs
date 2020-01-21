@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using CodeMania.Core.Benchmarks.Internal;
+using CodeMania.Core.EqualityComparers.Specialized;
 
 namespace CodeMania.Core.Benchmarks.EqualityComparers
 {

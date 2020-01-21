@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CodeMania.Core.EqualityComparers.Specialized;
 using NUnit.Framework;
 
 namespace CodeMania.UnitTests.EqualityComparers
