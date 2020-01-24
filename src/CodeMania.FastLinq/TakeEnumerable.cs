@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace CodeMania.FastLinq
 {
     internal static class TakeEnumerable<T>
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static TakeEnumerable<T, TEnumerator> From<TEnumerator>(TEnumerator enumerator, int count)
             where TEnumerator : IEnumerator<T>
         {

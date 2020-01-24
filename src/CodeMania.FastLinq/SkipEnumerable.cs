@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace CodeMania.FastLinq
 {
     internal static class SkipEnumerable<T>
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static SkipEnumerable<T, TEnumerator> From<TEnumerator>(TEnumerator enumerator, int count)
             where TEnumerator : IEnumerator<T>
         {

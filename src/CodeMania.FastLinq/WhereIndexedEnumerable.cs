@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace CodeMania.FastLinq
 {
     internal static class WhereIndexedEnumerable
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static WhereIndexedEnumerable<T, TEnumerator> From<T, TEnumerator>(TEnumerator enumerator, Func<T, int, bool> predicate)
             where TEnumerator : IEnumerator<T>
         {
             return new WhereIndexedEnumerable<T, TEnumerator>(enumerator, predicate ?? throw new ArgumentNullException(nameof(predicate)));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static WhereIndexedEnumerable<T, TArgument, TEnumerator> From<T, TArgument, TEnumerator>(TEnumerator enumerator, TArgument argument, IndexedPredicate<T, TArgument> predicate)
             where TEnumerator : IEnumerator<T>
         {

@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace CodeMania.FastLinq
 {
     internal static class SelectEnumerable
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static SelectEnumerable<TSource, TResult, TEnumerator> From<TSource, TResult, TEnumerator>(TEnumerator enumerator, Func<TSource, TResult> selector)
             where TEnumerator : IEnumerator<TSource>
         {
             return new SelectEnumerable<TSource, TResult, TEnumerator>(enumerator, selector ?? throw new ArgumentNullException(nameof(selector)));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static SelectEnumerable<TSource, TArg, TResult, TEnumerator> From<TSource, TArg, TResult, TEnumerator>(TEnumerator enumerator, TArg arg, Selector<TSource, TArg, TResult> selector)
             where TEnumerator : IEnumerator<TSource>
         {
