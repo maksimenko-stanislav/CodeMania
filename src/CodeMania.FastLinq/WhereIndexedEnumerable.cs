@@ -4,6 +4,21 @@ using System.Collections.Generic;
 
 namespace CodeMania.FastLinq
 {
+    public static class WhereIndexedEnumerable<T>
+    {
+        internal static WhereIndexedEnumerable<T, TEnumerator> From<TEnumerator>(TEnumerator enumerator, Func<T, int, bool> predicate)
+            where TEnumerator : IEnumerator<T>
+        {
+            return new WhereIndexedEnumerable<T, TEnumerator>(enumerator, predicate ?? throw new ArgumentNullException(nameof(predicate)));
+        }
+
+        internal static WhereIndexedEnumerable<T, TArgument, TEnumerator> From<TArgument, TEnumerator>(TEnumerator enumerator, TArgument argument, IndexedPredicate<T, TArgument> predicate)
+            where TEnumerator : IEnumerator<T>
+        {
+            return new WhereIndexedEnumerable<T, TArgument, TEnumerator>(enumerator, argument, predicate ?? throw new ArgumentNullException(nameof(predicate)));
+        }
+    }
+
     public struct WhereIndexedEnumerable<T, TEnumerator> : IEnumerable<T>
         where TEnumerator : IEnumerator<T>
     {
