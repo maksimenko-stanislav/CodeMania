@@ -833,5 +833,7 @@ namespace CodeMania.FastLinq
         }
 
         #endregion
+
+        // TODO: Add Skip/Take support
     }
 }

@@ -20,5 +20,6 @@ namespace CodeMania.FastLinq
         }
 
         // TODO: add other methods
+        // TODO: Add Skip/Take support
     }
 }
