@@ -8,12 +8,13 @@ namespace CodeMania.FastLinq
     public static partial class LinqExtensions
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static TPredicate CheckPredicate<TPredicate>(TPredicate predicate) where TPredicate : Delegate =>
-            predicate ?? throw new ArgumentNullException(nameof(predicate));
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static TPredicate CheckSelector<TPredicate>(TPredicate predicate) where TPredicate : Delegate =>
-            predicate ?? throw new ArgumentNullException(nameof(predicate));
+        private static void CheckPredicate<TPredicate>(TPredicate predicate) where TPredicate : Delegate
+        {
+            if (predicate == null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static T CheckSource<T>(T source) where T : class =>

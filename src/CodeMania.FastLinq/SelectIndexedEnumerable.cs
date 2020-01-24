@@ -4,6 +4,21 @@ using System.Collections.Generic;
 
 namespace CodeMania.FastLinq
 {
+    internal static class SelectIndexedEnumerable
+    {
+        public static SelectIndexedEnumerable<TSource, TResult, TEnumerator> From<TSource, TResult, TEnumerator>(TEnumerator enumerator, Func<TSource, int, TResult> selector)
+            where TEnumerator : IEnumerator<TSource>
+        {
+            return new SelectIndexedEnumerable<TSource, TResult, TEnumerator>(enumerator, selector ?? throw new ArgumentNullException(nameof(selector)));
+        }
+
+        public static SelectIndexedEnumerable<TSource, TArg, TResult, TEnumerator> From<TSource, TArg, TResult, TEnumerator>(TEnumerator enumerator, TArg arg, IndexedSelector<TSource, TArg, TResult> selector)
+            where TEnumerator : IEnumerator<TSource>
+        {
+            return new SelectIndexedEnumerable<TSource, TArg, TResult, TEnumerator>(enumerator, arg, selector ?? throw new ArgumentNullException(nameof(selector)));
+        }
+    }
+
     public struct SelectIndexedEnumerable<TSource, TResult, TEnumerator> : IEnumerable<TResult>
         where TEnumerator : IEnumerator<TSource>
     {

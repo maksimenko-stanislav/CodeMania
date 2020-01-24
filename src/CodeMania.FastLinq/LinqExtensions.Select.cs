@@ -14,10 +14,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             Selector<TSource, TArg, TResult> selector)
         {
-            return new SelectEnumerable<TSource, TArg, TResult, IEnumerator<TSource>>(
-                CheckSource(source).GetEnumerator(),
-                arg,
-                CheckSelector(selector));
+            return SelectEnumerable.From(CheckSource(source).GetEnumerator(), arg, selector);
         }
 
         public static SelectEnumerable<TSource, TArg, TResult, List<TSource>.Enumerator> Select<TSource, TArg, TResult>(
@@ -25,10 +22,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             Selector<TSource, TArg, TResult> selector)
         {
-            return new SelectEnumerable<TSource, TArg, TResult, List<TSource>.Enumerator>(
-                CheckSource(source).GetEnumerator(),
-                arg,
-                CheckSelector(selector));
+            return SelectEnumerable.From(CheckSource(source).GetEnumerator(), arg, selector);
         }
 
         public static SelectEnumerable<TSource, TArg, TResult, ArrayEnumerable<TSource>.Enumerator> Select<TSource, TArg, TResult>(
@@ -36,10 +30,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             Selector<TSource, TArg, TResult> selector)
         {
-            return new SelectEnumerable<TSource, TArg, TResult, ArrayEnumerable<TSource>.Enumerator>(
-                new ArrayEnumerable<TSource>(CheckSource(source)).GetEnumerator(),
-                arg,
-                CheckSelector(selector));
+            return SelectEnumerable.From(new ArrayEnumerable<TSource>(CheckSource(source)).GetEnumerator(), arg, selector);
         }
 
         // indexed
@@ -49,10 +40,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             IndexedSelector<TSource, TArg, TResult> selector)
         {
-            return new SelectIndexedEnumerable<TSource, TArg, TResult, IEnumerator<TSource>>(
-                CheckSource(source).GetEnumerator(),
-                arg,
-                CheckSelector(selector));
+            return SelectIndexedEnumerable.From(CheckSource(source).GetEnumerator(), arg, selector);
         }
 
         public static SelectIndexedEnumerable<TSource, TArg, TResult, List<TSource>.Enumerator> Select<TSource, TArg, TResult>(
@@ -60,10 +48,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             IndexedSelector<TSource, TArg, TResult> selector)
         {
-            return new SelectIndexedEnumerable<TSource, TArg, TResult, List<TSource>.Enumerator>(
-                CheckSource(source).GetEnumerator(),
-                arg,
-                CheckSelector(selector));
+            return SelectIndexedEnumerable.From(CheckSource(source).GetEnumerator(), arg, selector);
         }
 
         public static SelectIndexedEnumerable<TSource, TArg, TResult, ArrayEnumerable<TSource>.Enumerator> Select<TSource, TArg, TResult>(
@@ -71,10 +56,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             IndexedSelector<TSource, TArg, TResult> selector)
         {
-            return new SelectIndexedEnumerable<TSource, TArg, TResult, ArrayEnumerable<TSource>.Enumerator>(
-                new ArrayEnumerable<TSource>(CheckSource(source)).GetEnumerator(),
-                arg,
-                CheckSelector(selector));
+            return SelectIndexedEnumerable.From(new ArrayEnumerable<TSource>(CheckSource(source)).GetEnumerator(), arg, selector);
         }
 
         // optimized
@@ -87,10 +69,7 @@ namespace CodeMania.FastLinq
             Selector<TSrcResult, TArg, TResult> selector)
             where TSrcEnumerator : IEnumerator<TSource>
         {
-            return new SelectEnumerable<TSrcResult, TArg, TResult, SelectEnumerable<TSource, TSrcArg, TSrcResult, TSrcEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                arg,
-                CheckSelector(selector));
+            return SelectEnumerable.From(source.GetEnumerator(), arg, selector);
         }
 
         public static SelectEnumerable<TSrcResult, TArg, TResult, SelectIndexedEnumerable<TSource, TSrcArg, TSrcResult, TSrcEnumerator>.Enumerator> Select<TSource, TSrcArg, TArg, TSrcResult, TResult, TSrcEnumerator>(
@@ -99,10 +78,7 @@ namespace CodeMania.FastLinq
             Selector<TSrcResult, TArg, TResult> selector)
             where TSrcEnumerator : IEnumerator<TSource>
         {
-            return new SelectEnumerable<TSrcResult, TArg, TResult, SelectIndexedEnumerable<TSource, TSrcArg, TSrcResult, TSrcEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                arg,
-                CheckSelector(selector));
+            return SelectEnumerable.From(source.GetEnumerator(), arg, selector);
         }
 
         public static SelectEnumerable<TSrcResult, TArg, TResult, SelectEnumerable<TSource, TSrcResult, TSrcEnumerator>.Enumerator> Select<TSource, TArg, TSrcResult, TResult, TSrcEnumerator>(
@@ -111,10 +87,7 @@ namespace CodeMania.FastLinq
             Selector<TSrcResult, TArg, TResult> selector)
             where TSrcEnumerator : IEnumerator<TSource>
         {
-            return new SelectEnumerable<TSrcResult, TArg, TResult, SelectEnumerable<TSource, TSrcResult, TSrcEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                arg,
-                CheckSelector(selector));
+            return SelectEnumerable.From(source.GetEnumerator(), arg, selector);
         }
 
         public static SelectEnumerable<TSrcResult, TArg, TResult, SelectIndexedEnumerable<TSource, TSrcResult, TSrcEnumerator>.Enumerator> Select<TSource, TArg, TSrcResult, TResult, TSrcEnumerator>(
@@ -123,10 +96,7 @@ namespace CodeMania.FastLinq
             Selector<TSrcResult, TArg, TResult> selector)
             where TSrcEnumerator : IEnumerator<TSource>
         {
-            return new SelectEnumerable<TSrcResult, TArg, TResult, SelectIndexedEnumerable<TSource, TSrcResult, TSrcEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                arg,
-                CheckSelector(selector));
+            return SelectEnumerable.From(source.GetEnumerator(), arg, selector);
         }
 
         public static SelectEnumerable<TSrcResult, TResult, SelectEnumerable<TSource, TSrcArg, TSrcResult, TSrcEnumerator>.Enumerator> Select<TSource, TSrcArg, TSrcResult, TResult, TSrcEnumerator>(
@@ -134,9 +104,7 @@ namespace CodeMania.FastLinq
             Func<TSrcResult, TResult> selector)
             where TSrcEnumerator : IEnumerator<TSource>
         {
-            return new SelectEnumerable<TSrcResult, TResult, SelectEnumerable<TSource, TSrcArg, TSrcResult, TSrcEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                CheckSelector(selector));
+            return SelectEnumerable.From(source.GetEnumerator(), selector);
         }
 
         public static SelectEnumerable<TSrcResult, TResult, SelectIndexedEnumerable<TSource, TSrcArg, TSrcResult, TSrcEnumerator>.Enumerator> Select<TSource, TSrcArg, TSrcResult, TResult, TSrcEnumerator>(
@@ -144,9 +112,7 @@ namespace CodeMania.FastLinq
             Func<TSrcResult, TResult> selector)
             where TSrcEnumerator : IEnumerator<TSource>
         {
-            return new SelectEnumerable<TSrcResult, TResult, SelectIndexedEnumerable<TSource, TSrcArg, TSrcResult, TSrcEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                CheckSelector(selector));
+            return SelectEnumerable.From(source.GetEnumerator(), selector);
         }
 
         public static SelectEnumerable<TSrcResult, TResult, SelectEnumerable<TSource, TSrcResult, TSrcEnumerator>.Enumerator> Select<TSource, TSrcResult, TResult, TSrcEnumerator>(
@@ -154,9 +120,7 @@ namespace CodeMania.FastLinq
             Func<TSrcResult, TResult> selector)
             where TSrcEnumerator : IEnumerator<TSource>
         {
-            return new SelectEnumerable<TSrcResult, TResult, SelectEnumerable<TSource, TSrcResult, TSrcEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                CheckSelector(selector));
+            return SelectEnumerable.From(source.GetEnumerator(), selector);
         }
 
         public static SelectEnumerable<TSrcResult, TResult, SelectIndexedEnumerable<TSource, TSrcResult, TSrcEnumerator>.Enumerator> Select<TSource, TSrcResult, TResult, TSrcEnumerator>(
@@ -164,9 +128,7 @@ namespace CodeMania.FastLinq
             Func<TSrcResult, TResult> selector)
             where TSrcEnumerator : IEnumerator<TSource>
         {
-            return new SelectEnumerable<TSrcResult, TResult, SelectIndexedEnumerable<TSource, TSrcResult, TSrcEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                CheckSelector(selector));
+            return SelectEnumerable.From(source.GetEnumerator(), selector);
         }
 
         public static SelectIndexedEnumerable<TSrcResult, TArg, TResult, SelectEnumerable<TSource, TSrcArg, TSrcResult, TSrcEnumerator>.Enumerator> Select<TSource, TSrcArg, TArg, TSrcResult, TResult, TSrcEnumerator>(
@@ -175,10 +137,7 @@ namespace CodeMania.FastLinq
             IndexedSelector<TSrcResult, TArg, TResult> selector)
             where TSrcEnumerator : IEnumerator<TSource>
         {
-            return new SelectIndexedEnumerable<TSrcResult, TArg, TResult, SelectEnumerable<TSource, TSrcArg, TSrcResult, TSrcEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                arg,
-                CheckSelector(selector));
+            return SelectIndexedEnumerable.From(source.GetEnumerator(), arg, selector);
         }
 
         public static SelectIndexedEnumerable<TSrcResult, TArg, TResult, SelectIndexedEnumerable<TSource, TSrcArg, TSrcResult, TSrcEnumerator>.Enumerator> Select<TSource, TSrcArg, TArg, TSrcResult, TResult, TSrcEnumerator>(
@@ -187,10 +146,7 @@ namespace CodeMania.FastLinq
             IndexedSelector<TSrcResult, TArg, TResult> selector)
             where TSrcEnumerator : IEnumerator<TSource>
         {
-            return new SelectIndexedEnumerable<TSrcResult, TArg, TResult, SelectIndexedEnumerable<TSource, TSrcArg, TSrcResult, TSrcEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                arg,
-                CheckSelector(selector));
+            return SelectIndexedEnumerable.From(source.GetEnumerator(), arg, selector);
         }
 
         public static SelectIndexedEnumerable<TSrcResult, TArg, TResult, SelectEnumerable<TSource, TSrcResult, TSrcEnumerator>.Enumerator> Select<TSource, TArg, TSrcResult, TResult, TSrcEnumerator>(
@@ -199,10 +155,7 @@ namespace CodeMania.FastLinq
             IndexedSelector<TSrcResult, TArg, TResult> selector)
             where TSrcEnumerator : IEnumerator<TSource>
         {
-            return new SelectIndexedEnumerable<TSrcResult, TArg, TResult, SelectEnumerable<TSource, TSrcResult, TSrcEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                arg,
-                CheckSelector(selector));
+            return SelectIndexedEnumerable.From(source.GetEnumerator(), arg, selector);
         }
 
         public static SelectIndexedEnumerable<TSrcResult, TArg, TResult, SelectIndexedEnumerable<TSource, TSrcResult, TSrcEnumerator>.Enumerator> Select<TSource, TArg, TSrcResult, TResult, TSrcEnumerator>(
@@ -211,10 +164,7 @@ namespace CodeMania.FastLinq
             IndexedSelector<TSrcResult, TArg, TResult> selector)
             where TSrcEnumerator : IEnumerator<TSource>
         {
-            return new SelectIndexedEnumerable<TSrcResult, TArg, TResult, SelectIndexedEnumerable<TSource, TSrcResult, TSrcEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                arg,
-                CheckSelector(selector));
+            return SelectIndexedEnumerable.From(source.GetEnumerator(), arg, selector);
         }
 
         public static SelectIndexedEnumerable<TSrcResult, TResult, SelectEnumerable<TSource, TSrcArg, TSrcResult, TSrcEnumerator>.Enumerator> Select<TSource, TSrcArg, TSrcResult, TResult, TSrcEnumerator>(
@@ -222,9 +172,7 @@ namespace CodeMania.FastLinq
             Func<TSrcResult, int, TResult> selector)
             where TSrcEnumerator : IEnumerator<TSource>
         {
-            return new SelectIndexedEnumerable<TSrcResult, TResult, SelectEnumerable<TSource, TSrcArg, TSrcResult, TSrcEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                CheckSelector(selector));
+            return SelectIndexedEnumerable.From(source.GetEnumerator(), selector);
         }
 
         public static SelectIndexedEnumerable<TSrcResult, TResult, SelectIndexedEnumerable<TSource, TSrcArg, TSrcResult, TSrcEnumerator>.Enumerator> Select<TSource, TSrcArg, TSrcResult, TResult, TSrcEnumerator>(
@@ -232,9 +180,7 @@ namespace CodeMania.FastLinq
             Func<TSrcResult, int, TResult> selector)
             where TSrcEnumerator : IEnumerator<TSource>
         {
-            return new SelectIndexedEnumerable<TSrcResult, TResult, SelectIndexedEnumerable<TSource, TSrcArg, TSrcResult, TSrcEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                CheckSelector(selector));
+            return SelectIndexedEnumerable.From(source.GetEnumerator(), selector);
         }
 
         public static SelectIndexedEnumerable<TSrcResult, TResult, SelectEnumerable<TSource, TSrcResult, TSrcEnumerator>.Enumerator> Select<TSource, TSrcResult, TResult, TSrcEnumerator>(
@@ -242,9 +188,7 @@ namespace CodeMania.FastLinq
             Func<TSrcResult, int, TResult> selector)
             where TSrcEnumerator : IEnumerator<TSource>
         {
-            return new SelectIndexedEnumerable<TSrcResult, TResult, SelectEnumerable<TSource, TSrcResult, TSrcEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                CheckSelector(selector));
+            return SelectIndexedEnumerable.From(source.GetEnumerator(), selector);
         }
 
         public static SelectIndexedEnumerable<TSrcResult, TResult, SelectIndexedEnumerable<TSource, TSrcResult, TSrcEnumerator>.Enumerator> Select<TSource, TSrcResult, TResult, TSrcEnumerator>(
@@ -252,9 +196,7 @@ namespace CodeMania.FastLinq
             Func<TSrcResult, int, TResult> selector)
             where TSrcEnumerator : IEnumerator<TSource>
         {
-            return new SelectIndexedEnumerable<TSrcResult, TResult, SelectIndexedEnumerable<TSource, TSrcResult, TSrcEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                CheckSelector(selector));
+            return SelectIndexedEnumerable.From(source.GetEnumerator(), selector);
         }
 
         // where -> select
@@ -265,10 +207,7 @@ namespace CodeMania.FastLinq
             Selector<TSource, TArg, TResult> selector)
             where TEnumerator : IEnumerator<TSource>
         {
-            return new SelectEnumerable<TSource, TArg, TResult, WhereEnumerable<TSource, TArg, TEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                arg,
-                CheckSelector(selector));
+            return SelectEnumerable.From(source.GetEnumerator(), arg, selector);
         }
 
         public static SelectEnumerable<TSource, TArg, TResult, WhereIndexedEnumerable<TSource, TArg, TEnumerator>.Enumerator> Select<TSource, TArg, TResult, TEnumerator>(
@@ -277,10 +216,7 @@ namespace CodeMania.FastLinq
             Selector<TSource, TArg, TResult> selector)
             where TEnumerator : IEnumerator<TSource>
         {
-            return new SelectEnumerable<TSource, TArg, TResult, WhereIndexedEnumerable<TSource, TArg, TEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                arg,
-                CheckSelector(selector));
+            return SelectEnumerable.From(source.GetEnumerator(), arg, selector);
         }
 
         public static SelectEnumerable<TSource, TArg, TResult, WhereEnumerable<TSource, TEnumerator>.Enumerator> Select<TSource, TArg, TResult, TEnumerator>(
@@ -289,10 +225,7 @@ namespace CodeMania.FastLinq
             Selector<TSource, TArg, TResult> selector)
             where TEnumerator : IEnumerator<TSource>
         {
-            return new SelectEnumerable<TSource, TArg, TResult, WhereEnumerable<TSource, TEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                arg,
-                CheckSelector(selector));
+            return SelectEnumerable.From(source.GetEnumerator(), arg, selector);
         }
 
         public static SelectEnumerable<TSource, TArg, TResult, WhereIndexedEnumerable<TSource, TEnumerator>.Enumerator> Select<TSource, TArg, TResult, TEnumerator>(
@@ -301,10 +234,7 @@ namespace CodeMania.FastLinq
             Selector<TSource, TArg, TResult> selector)
             where TEnumerator : IEnumerator<TSource>
         {
-            return new SelectEnumerable<TSource, TArg, TResult, WhereIndexedEnumerable<TSource, TEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                arg,
-                CheckSelector(selector));
+            return SelectEnumerable.From(source.GetEnumerator(), arg, selector);
         }
 
         public static SelectEnumerable<TSource, TResult, WhereEnumerable<TSource, TArg, TEnumerator>.Enumerator> Select<TSource, TArg, TResult, TEnumerator>(
@@ -312,9 +242,7 @@ namespace CodeMania.FastLinq
             Func<TSource, TResult> selector)
             where TEnumerator : IEnumerator<TSource>
         {
-            return new SelectEnumerable<TSource, TResult, WhereEnumerable<TSource, TArg, TEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                CheckSelector(selector));
+            return SelectEnumerable.From(source.GetEnumerator(), selector);
         }
 
         public static SelectEnumerable<TSource, TResult, WhereIndexedEnumerable<TSource, TArg, TEnumerator>.Enumerator> Select<TSource, TArg, TResult, TEnumerator>(
@@ -322,9 +250,7 @@ namespace CodeMania.FastLinq
             Func<TSource, TResult> selector)
             where TEnumerator : IEnumerator<TSource>
         {
-            return new SelectEnumerable<TSource, TResult, WhereIndexedEnumerable<TSource, TArg, TEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                CheckSelector(selector));
+            return SelectEnumerable.From(source.GetEnumerator(), selector);
         }
 
         public static SelectEnumerable<TSource, TResult, WhereEnumerable<TSource, TEnumerator>.Enumerator> Select<TSource, TArg, TResult, TEnumerator>(
@@ -332,9 +258,7 @@ namespace CodeMania.FastLinq
             Func<TSource, TResult> selector)
             where TEnumerator : IEnumerator<TSource>
         {
-            return new SelectEnumerable<TSource, TResult, WhereEnumerable<TSource, TEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                CheckSelector(selector));
+            return SelectEnumerable.From(source.GetEnumerator(), selector);
         }
 
         public static SelectEnumerable<TSource, TResult, WhereIndexedEnumerable<TSource, TEnumerator>.Enumerator> Select<TSource, TArg, TResult, TEnumerator>(
@@ -342,9 +266,7 @@ namespace CodeMania.FastLinq
             Func<TSource, TResult> selector)
             where TEnumerator : IEnumerator<TSource>
         {
-            return new SelectEnumerable<TSource, TResult, WhereIndexedEnumerable<TSource, TEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                CheckSelector(selector));
+            return SelectEnumerable.From(source.GetEnumerator(), selector);
         }
 
         public static SelectIndexedEnumerable<TSource, TArg, TResult, WhereEnumerable<TSource, TArg, TEnumerator>.Enumerator> Select<TSource, TArg, TResult, TEnumerator>(
@@ -353,10 +275,7 @@ namespace CodeMania.FastLinq
             IndexedSelector<TSource, TArg, TResult> selector)
             where TEnumerator : IEnumerator<TSource>
         {
-            return new SelectIndexedEnumerable<TSource, TArg, TResult, WhereEnumerable<TSource, TArg, TEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                arg,
-                CheckSelector(selector));
+            return SelectIndexedEnumerable.From(source.GetEnumerator(), arg, selector);
         }
 
         public static SelectIndexedEnumerable<TSource, TArg, TResult, WhereIndexedEnumerable<TSource, TArg, TEnumerator>.Enumerator> Select<TSource, TArg, TResult, TEnumerator>(
@@ -365,10 +284,7 @@ namespace CodeMania.FastLinq
             IndexedSelector<TSource, TArg, TResult> selector)
             where TEnumerator : IEnumerator<TSource>
         {
-            return new SelectIndexedEnumerable<TSource, TArg, TResult, WhereIndexedEnumerable<TSource, TArg, TEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                arg,
-                CheckSelector(selector));
+            return SelectIndexedEnumerable.From(source.GetEnumerator(), arg, selector);
         }
 
         public static SelectIndexedEnumerable<TSource, TArg, TResult, WhereEnumerable<TSource, TEnumerator>.Enumerator> Select<TSource, TArg, TResult, TEnumerator>(
@@ -377,10 +293,7 @@ namespace CodeMania.FastLinq
             IndexedSelector<TSource, TArg, TResult> selector)
             where TEnumerator : IEnumerator<TSource>
         {
-            return new SelectIndexedEnumerable<TSource, TArg, TResult, WhereEnumerable<TSource, TEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                arg,
-                CheckSelector(selector));
+            return SelectIndexedEnumerable.From(source.GetEnumerator(), arg, selector);
         }
 
         public static SelectIndexedEnumerable<TSource, TArg, TResult, WhereIndexedEnumerable<TSource, TEnumerator>.Enumerator> Select<TSource, TArg, TResult, TEnumerator>(
@@ -389,10 +302,7 @@ namespace CodeMania.FastLinq
             IndexedSelector<TSource, TArg, TResult> selector)
             where TEnumerator : IEnumerator<TSource>
         {
-            return new SelectIndexedEnumerable<TSource, TArg, TResult, WhereIndexedEnumerable<TSource, TEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                arg,
-                CheckSelector(selector));
+            return SelectIndexedEnumerable.From(source.GetEnumerator(), arg, selector);
         }
 
         public static SelectIndexedEnumerable<TSource, TResult, WhereEnumerable<TSource, TArg, TEnumerator>.Enumerator> Select<TSource, TArg, TResult, TEnumerator>(
@@ -400,9 +310,7 @@ namespace CodeMania.FastLinq
             Func<TSource, int, TResult> selector)
             where TEnumerator : IEnumerator<TSource>
         {
-            return new SelectIndexedEnumerable<TSource, TResult, WhereEnumerable<TSource, TArg, TEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                CheckSelector(selector));
+            return SelectIndexedEnumerable.From(source.GetEnumerator(), selector);
         }
 
         public static SelectIndexedEnumerable<TSource, TResult, WhereIndexedEnumerable<TSource, TArg, TEnumerator>.Enumerator> Select<TSource, TArg, TResult, TEnumerator>(
@@ -410,9 +318,7 @@ namespace CodeMania.FastLinq
             Func<TSource, int, TResult> selector)
             where TEnumerator : IEnumerator<TSource>
         {
-            return new SelectIndexedEnumerable<TSource, TResult, WhereIndexedEnumerable<TSource, TArg, TEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                CheckSelector(selector));
+            return SelectIndexedEnumerable.From(source.GetEnumerator(), selector);
         }
 
         public static SelectIndexedEnumerable<TSource, TResult, WhereEnumerable<TSource, TEnumerator>.Enumerator> Select<TSource, TResult, TEnumerator>(
@@ -420,9 +326,7 @@ namespace CodeMania.FastLinq
             Func<TSource, int, TResult> selector)
             where TEnumerator : IEnumerator<TSource>
         {
-            return new SelectIndexedEnumerable<TSource, TResult, WhereEnumerable<TSource, TEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                CheckSelector(selector));
+            return SelectIndexedEnumerable.From(source.GetEnumerator(), selector);
         }
 
         public static SelectIndexedEnumerable<TSource, TResult, WhereIndexedEnumerable<TSource, TEnumerator>.Enumerator> Select<TSource, TResult, TEnumerator>(
@@ -430,9 +334,7 @@ namespace CodeMania.FastLinq
             Func<TSource, int, TResult> selector)
             where TEnumerator : IEnumerator<TSource>
         {
-            return new SelectIndexedEnumerable<TSource, TResult, WhereIndexedEnumerable<TSource, TEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                CheckSelector(selector));
+            return SelectIndexedEnumerable.From(source.GetEnumerator(), selector);
         }
 
         public static SelectEnumerable<TSource, TResult, WhereEnumerable<TSource, TEnumerator>.Enumerator> Select<TSource, TResult, TEnumerator>(
@@ -440,9 +342,7 @@ namespace CodeMania.FastLinq
             Func<TSource, TResult> selector)
             where TEnumerator : IEnumerator<TSource>
         {
-            return new SelectEnumerable<TSource, TResult, WhereEnumerable<TSource, TEnumerator>.Enumerator>(
-                source.GetEnumerator(),
-                CheckSelector(selector));
+            return SelectEnumerable.From(source.GetEnumerator(), selector);
         }
 
         #endregion

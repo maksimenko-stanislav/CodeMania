@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CodeMania.FastLinq
 {
-    public static class TakeEnumerable<T>
+    internal static class TakeEnumerable<T>
     {
         internal static TakeEnumerable<T, TEnumerator> From<TEnumerator>(TEnumerator enumerator, int count)
             where TEnumerator : IEnumerator<T>

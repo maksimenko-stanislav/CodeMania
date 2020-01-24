@@ -14,7 +14,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             Predicate<T, TArg> predicate)
         {
-            return WhereEnumerable<T>.From(CheckSource(source).GetEnumerator(), arg, predicate);
+            return WhereEnumerable.From(CheckSource(source).GetEnumerator(), arg, predicate);
         }
 
         public static WhereEnumerable<T, TArg, List<T>.Enumerator> Where<T, TArg>(
@@ -22,7 +22,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             Predicate<T, TArg> predicate)
         {
-            return WhereEnumerable<T>.From(CheckSource(source).GetEnumerator(), arg, predicate);
+            return WhereEnumerable.From(CheckSource(source).GetEnumerator(), arg, predicate);
         }
 
         public static WhereEnumerable<T, TArg, ArrayEnumerable<T>.Enumerator> Where<T, TArg>(
@@ -30,7 +30,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             Predicate<T, TArg> predicate)
         {
-            return WhereEnumerable<T>.From(new ArrayEnumerable<T>(CheckSource(source)).GetEnumerator(), arg, predicate);
+            return WhereEnumerable.From(new ArrayEnumerable<T>(CheckSource(source)).GetEnumerator(), arg, predicate);
         }
 
         public static WhereEnumerable<T, TArg, HashSet<T>.Enumerator> Where<T, TArg>(
@@ -38,7 +38,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             Predicate<T, TArg> predicate)
         {
-            return WhereEnumerable<T>.From(CheckSource(source).GetEnumerator(), arg, predicate);
+            return WhereEnumerable.From(CheckSource(source).GetEnumerator(), arg, predicate);
         }
 
         public static WhereEnumerable<T, TArg, SortedSet<T>.Enumerator> Where<T, TArg>(
@@ -46,7 +46,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             Predicate<T, TArg> predicate)
         {
-            return WhereEnumerable<T>.From(CheckSource(source).GetEnumerator(), arg, predicate);
+            return WhereEnumerable.From(CheckSource(source).GetEnumerator(), arg, predicate);
         }
 
         public static WhereEnumerable<KeyValuePair<TKey, TValue>, TArg, Dictionary<TKey, TValue>.Enumerator> Where<TKey, TValue, TArg>(
@@ -54,7 +54,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             Predicate<KeyValuePair<TKey, TValue>, TArg> predicate)
         {
-            return WhereEnumerable<KeyValuePair<TKey, TValue>>.From(CheckSource(source).GetEnumerator(), arg, predicate);
+            return WhereEnumerable.From(CheckSource(source).GetEnumerator(), arg, predicate);
         }
 
         public static WhereEnumerable<KeyValuePair<TKey, TValue>, TArg, SortedDictionary<TKey, TValue>.Enumerator> Where<TKey, TValue, TArg>(
@@ -62,7 +62,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             Predicate<KeyValuePair<TKey, TValue>, TArg> predicate)
         {
-            return WhereEnumerable<KeyValuePair<TKey, TValue>>.From(CheckSource(source).GetEnumerator(), arg, predicate);
+            return WhereEnumerable.From(CheckSource(source).GetEnumerator(), arg, predicate);
         }
 
         // indexed
@@ -72,7 +72,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             IndexedPredicate<T, TArg> predicate)
         {
-            return WhereIndexedEnumerable<T>.From(CheckSource(source).GetEnumerator(), arg, predicate);
+            return WhereIndexedEnumerable.From(CheckSource(source).GetEnumerator(), arg, predicate);
         }
 
         public static WhereIndexedEnumerable<T, TArg, List<T>.Enumerator> Where<T, TArg>(
@@ -80,7 +80,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             IndexedPredicate<T, TArg> predicate)
         {
-            return WhereIndexedEnumerable<T>.From(CheckSource(source).GetEnumerator(), arg, predicate);
+            return WhereIndexedEnumerable.From(CheckSource(source).GetEnumerator(), arg, predicate);
         }
 
         public static WhereIndexedEnumerable<T, TArg, ArrayEnumerable<T>.Enumerator> Where<T, TArg>(
@@ -88,7 +88,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             IndexedPredicate<T, TArg> predicate)
         {
-            return WhereIndexedEnumerable<T>.From(new ArrayEnumerable<T>(CheckSource(source)).GetEnumerator(), arg, predicate);
+            return WhereIndexedEnumerable.From(new ArrayEnumerable<T>(CheckSource(source)).GetEnumerator(), arg, predicate);
         }
 
         public static WhereIndexedEnumerable<KeyValuePair<TKey, TValue>, TArg, Dictionary<TKey, TValue>.Enumerator> Where<TKey, TValue, TArg>(
@@ -96,7 +96,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             IndexedPredicate<KeyValuePair<TKey, TValue>, TArg> predicate)
         {
-            return WhereIndexedEnumerable<KeyValuePair<TKey, TValue>>.From(CheckSource(source).GetEnumerator(), arg, predicate);
+            return WhereIndexedEnumerable.From(CheckSource(source).GetEnumerator(), arg, predicate);
         }
 
         public static WhereIndexedEnumerable<KeyValuePair<TKey, TValue>, TArg, SortedDictionary<TKey, TValue>.Enumerator> Where<TKey, TValue, TArg>(
@@ -104,7 +104,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             IndexedPredicate<KeyValuePair<TKey, TValue>, TArg> predicate)
         {
-            return WhereIndexedEnumerable<KeyValuePair<TKey, TValue>>.From(CheckSource(source).GetEnumerator(), arg, predicate);
+            return WhereIndexedEnumerable.From(CheckSource(source).GetEnumerator(), arg, predicate);
         }
 
         // optimized
@@ -117,7 +117,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             Predicate<T, TArg> predicate) where TEnumerator : IEnumerator<T>
         {
-            return WhereEnumerable<T>.From(source.GetEnumerator(), arg, predicate);
+            return WhereEnumerable.From(source.GetEnumerator(), arg, predicate);
         }
 
         public static WhereEnumerable<T, TArg, WhereEnumerable<T, TArg, TEnumerator>.Enumerator> Where<T, TArg, TEnumerator>(
@@ -125,7 +125,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             Predicate<T, TArg> predicate) where TEnumerator : IEnumerator<T>
         {
-            return WhereEnumerable<T>.From(source.GetEnumerator(), arg, predicate);
+            return WhereEnumerable.From(source.GetEnumerator(), arg, predicate);
         }
 
         public static WhereEnumerable<T, TArg, WhereIndexedEnumerable<T, TEnumerator>.Enumerator> Where<T, TArg, TEnumerator>(
@@ -133,7 +133,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             Predicate<T, TArg> predicate) where TEnumerator : IEnumerator<T>
         {
-            return WhereEnumerable<T>.From(source.GetEnumerator(), arg, predicate);
+            return WhereEnumerable.From(source.GetEnumerator(), arg, predicate);
         }
 
         public static WhereEnumerable<T, TArg, WhereIndexedEnumerable<T, TArg, TEnumerator>.Enumerator> Where<T, TArg, TEnumerator>(
@@ -141,7 +141,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             Predicate<T, TArg> predicate) where TEnumerator : IEnumerator<T>
         {
-            return WhereEnumerable<T>.From(source.GetEnumerator(), arg, predicate);
+            return WhereEnumerable.From(source.GetEnumerator(), arg, predicate);
         }
 
         // WhereIndexedEnumerable<T, TArg, TEnumerator>
@@ -150,7 +150,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             IndexedPredicate<T, TArg> predicate) where TEnumerator : IEnumerator<T>
         {
-            return WhereIndexedEnumerable<T>.From(source.GetEnumerator(), arg, predicate);
+            return WhereIndexedEnumerable.From(source.GetEnumerator(), arg, predicate);
         }
 
         public static WhereIndexedEnumerable<T, TArg, WhereEnumerable<T, TArg, TEnumerator>.Enumerator> Where<T, TArg, TEnumerator>(
@@ -158,7 +158,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             IndexedPredicate<T, TArg> predicate) where TEnumerator : IEnumerator<T>
         {
-            return WhereIndexedEnumerable<T>.From(source.GetEnumerator(), arg, predicate);
+            return WhereIndexedEnumerable.From(source.GetEnumerator(), arg, predicate);
         }
 
         public static WhereIndexedEnumerable<T, TArg, WhereIndexedEnumerable<T, TEnumerator>.Enumerator> Where<T, TArg, TEnumerator>(
@@ -166,7 +166,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             IndexedPredicate<T, TArg> predicate) where TEnumerator : IEnumerator<T>
         {
-            return WhereIndexedEnumerable<T>.From(source.GetEnumerator(), arg, predicate);
+            return WhereIndexedEnumerable.From(source.GetEnumerator(), arg, predicate);
         }
 
         public static WhereIndexedEnumerable<T, TArg, WhereIndexedEnumerable<T, TArg, TEnumerator>.Enumerator> Where<T, TArg, TEnumerator>(
@@ -174,7 +174,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             IndexedPredicate<T, TArg> predicate) where TEnumerator : IEnumerator<T>
         {
-            return WhereIndexedEnumerable<T>.From(source.GetEnumerator(), arg, predicate);
+            return WhereIndexedEnumerable.From(source.GetEnumerator(), arg, predicate);
         }
 
         // WhereEnumerable<T, TEnumerator>
@@ -183,7 +183,7 @@ namespace CodeMania.FastLinq
             Func<T, bool> predicate)
             where TEnumerator : IEnumerator<T>
         {
-            return WhereEnumerable<T>.From(source.GetEnumerator(), predicate);
+            return WhereEnumerable.From(source.GetEnumerator(), predicate);
         }
 
         public static WhereEnumerable<T, WhereEnumerable<T, TArg, TEnumerator>.Enumerator> Where<T, TArg, TEnumerator>(
@@ -191,7 +191,7 @@ namespace CodeMania.FastLinq
             Func<T, bool> predicate)
             where TEnumerator : IEnumerator<T>
         {
-            return WhereEnumerable<T>.From(source.GetEnumerator(), predicate);
+            return WhereEnumerable.From(source.GetEnumerator(), predicate);
         }
 
         public static WhereEnumerable<T, WhereIndexedEnumerable<T, TEnumerator>.Enumerator> Where<T, TEnumerator>(
@@ -199,7 +199,7 @@ namespace CodeMania.FastLinq
             Func<T, bool> predicate)
             where TEnumerator : IEnumerator<T>
         {
-            return WhereEnumerable<T>.From(source.GetEnumerator(), predicate);
+            return WhereEnumerable.From(source.GetEnumerator(), predicate);
         }
 
         public static WhereEnumerable<T, WhereIndexedEnumerable<T, TArg, TEnumerator>.Enumerator> Where<T, TArg, TEnumerator>(
@@ -207,7 +207,7 @@ namespace CodeMania.FastLinq
             Func<T, bool> predicate)
             where TEnumerator : IEnumerator<T>
         {
-            return WhereEnumerable<T>.From(source.GetEnumerator(), predicate);
+            return WhereEnumerable.From(source.GetEnumerator(), predicate);
         }
 
         // WhereIndexedEnumerable<T, TEnumerator>
@@ -216,7 +216,7 @@ namespace CodeMania.FastLinq
             Func<T, int, bool> predicate)
             where TEnumerator : IEnumerator<T>
         {
-            return WhereIndexedEnumerable<T>.From(source.GetEnumerator(), predicate);
+            return WhereIndexedEnumerable.From(source.GetEnumerator(), predicate);
         }
 
         public static WhereIndexedEnumerable<T, WhereEnumerable<T, TArg, TEnumerator>.Enumerator> Where<T, TArg, TEnumerator>(
@@ -224,7 +224,7 @@ namespace CodeMania.FastLinq
             Func<T, int, bool> predicate)
             where TEnumerator : IEnumerator<T>
         {
-            return WhereIndexedEnumerable<T>.From(source.GetEnumerator(), predicate);
+            return WhereIndexedEnumerable.From(source.GetEnumerator(), predicate);
         }
 
         public static WhereIndexedEnumerable<T, WhereIndexedEnumerable<T, TEnumerator>.Enumerator> Where<T, TEnumerator>(
@@ -232,7 +232,7 @@ namespace CodeMania.FastLinq
             Func<T, int, bool> predicate)
             where TEnumerator : IEnumerator<T>
         {
-            return WhereIndexedEnumerable<T>.From(source.GetEnumerator(), predicate);
+            return WhereIndexedEnumerable.From(source.GetEnumerator(), predicate);
         }
 
         public static WhereIndexedEnumerable<T, WhereIndexedEnumerable<T, TArg, TEnumerator>.Enumerator> Where<T, TArg, TEnumerator>(
@@ -240,7 +240,7 @@ namespace CodeMania.FastLinq
             Func<T, int, bool> predicate)
             where TEnumerator : IEnumerator<T>
         {
-            return WhereIndexedEnumerable<T>.From(source.GetEnumerator(), predicate);
+            return WhereIndexedEnumerable.From(source.GetEnumerator(), predicate);
         }
 
         // select -> where
@@ -252,7 +252,7 @@ namespace CodeMania.FastLinq
             Predicate<TResult, TArg> predicate)
             where TSourceEnumerator : IEnumerator<TSource>
         {
-            return WhereEnumerable<TResult>.From(source.GetEnumerator(), arg, predicate);
+            return WhereEnumerable.From(source.GetEnumerator(), arg, predicate);
         }
 
         public static WhereEnumerable<TResult, TArg, SelectEnumerable<TSource, TSrcArg, TResult, TSourceEnumerator>.Enumerator> Where<TSource, TSrcArg, TArg, TResult, TSourceEnumerator>(
@@ -261,7 +261,7 @@ namespace CodeMania.FastLinq
             Predicate<TResult, TArg> predicate)
             where TSourceEnumerator : IEnumerator<TSource>
         {
-            return WhereEnumerable<TResult>.From(source.GetEnumerator(), arg, predicate);
+            return WhereEnumerable.From(source.GetEnumerator(), arg, predicate);
         }
 
         public static WhereEnumerable<TResult, TArg, SelectIndexedEnumerable<TSource, TResult, TSourceEnumerator>.Enumerator> Where<TSource, TResult, TArg, TSourceEnumerator>(
@@ -270,7 +270,7 @@ namespace CodeMania.FastLinq
             Predicate<TResult, TArg> predicate)
             where TSourceEnumerator : IEnumerator<TSource>
         {
-            return WhereEnumerable<TResult>.From(source.GetEnumerator(), arg, predicate);
+            return WhereEnumerable.From(source.GetEnumerator(), arg, predicate);
         }
 
         public static WhereEnumerable<TResult, TArg, SelectIndexedEnumerable<TSource, TSrcArg, TResult, TEnumerator>.Enumerator> Where<TSource, TSrcArg, TArg, TResult, TEnumerator>(
@@ -279,7 +279,7 @@ namespace CodeMania.FastLinq
             Predicate<TResult, TArg> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
-            return WhereEnumerable<TResult>.From(source.GetEnumerator(), arg, predicate);
+            return WhereEnumerable.From(source.GetEnumerator(), arg, predicate);
         }
 
         // WhereIndexedEnumerable<T, TArg, TEnumerator>
@@ -289,7 +289,7 @@ namespace CodeMania.FastLinq
             IndexedPredicate<TResult, TArg> predicate)
             where TSourceEnumerator : IEnumerator<TSource>
         {
-            return WhereIndexedEnumerable<TResult>.From(source.GetEnumerator(), arg, predicate);
+            return WhereIndexedEnumerable.From(source.GetEnumerator(), arg, predicate);
         }
 
         public static WhereIndexedEnumerable<TResult, TArg, SelectEnumerable<TSource, TSrcArg, TResult, TSourceEnumerator>.Enumerator> Where<TSource, TSrcArg, TArg, TResult, TSourceEnumerator>(
@@ -297,7 +297,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             IndexedPredicate<TResult, TArg> predicate) where TSourceEnumerator : IEnumerator<TSource>
         {
-            return WhereIndexedEnumerable<TResult>.From(source.GetEnumerator(), arg, predicate);
+            return WhereIndexedEnumerable.From(source.GetEnumerator(), arg, predicate);
         }
 
         public static WhereIndexedEnumerable<TResult, TArg, SelectIndexedEnumerable<TSource, TResult, TSourceEnumerator>.Enumerator> Where<TSource, TResult, TArg, TSourceEnumerator>(
@@ -305,7 +305,7 @@ namespace CodeMania.FastLinq
             TArg arg,
             IndexedPredicate<TResult, TArg> predicate) where TSourceEnumerator : IEnumerator<TSource>
         {
-            return WhereIndexedEnumerable<TResult>.From(source.GetEnumerator(), arg, predicate);
+            return WhereIndexedEnumerable.From(source.GetEnumerator(), arg, predicate);
         }
 
         public static WhereIndexedEnumerable<TResult, TArg, SelectIndexedEnumerable<TSource, TSrcArg, TResult, TEnumerator>.Enumerator> Where<TSource, TSrcArg, TArg, TResult, TEnumerator>(
@@ -314,7 +314,7 @@ namespace CodeMania.FastLinq
             IndexedPredicate<TResult, TArg> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
-            return WhereIndexedEnumerable<TResult>.From(source.GetEnumerator(), arg, predicate);
+            return WhereIndexedEnumerable.From(source.GetEnumerator(), arg, predicate);
         }
 
         // WhereEnumerable<T, TEnumerator>
@@ -323,7 +323,7 @@ namespace CodeMania.FastLinq
             Func<TResult, bool> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
-            return WhereEnumerable<TResult>.From(source.GetEnumerator(), predicate);
+            return WhereEnumerable.From(source.GetEnumerator(), predicate);
         }
 
         public static WhereEnumerable<TResult, SelectEnumerable<TSource, TSrcArg, TResult, TEnumerator>.Enumerator> Where<TSource, TSrcArg, TResult, TEnumerator>(
@@ -331,7 +331,7 @@ namespace CodeMania.FastLinq
             Func<TResult, bool> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
-            return WhereEnumerable<TResult>.From(source.GetEnumerator(), predicate);
+            return WhereEnumerable.From(source.GetEnumerator(), predicate);
         }
 
         public static WhereEnumerable<TResult, SelectIndexedEnumerable<TSource, TResult, TEnumerator>.Enumerator> Where<TSource, TResult, TEnumerator>(
@@ -339,7 +339,7 @@ namespace CodeMania.FastLinq
             Func<TResult, bool> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
-            return WhereEnumerable<TResult>.From(source.GetEnumerator(), predicate);
+            return WhereEnumerable.From(source.GetEnumerator(), predicate);
         }
 
         public static WhereEnumerable<TResult, SelectIndexedEnumerable<TSource, TSrcArg, TResult, TEnumerator>.Enumerator> Where<TSource, TSrcArg, TResult, TEnumerator>(
@@ -347,7 +347,7 @@ namespace CodeMania.FastLinq
             Func<TResult, bool> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
-            return WhereEnumerable<TResult>.From(source.GetEnumerator(), predicate);
+            return WhereEnumerable.From(source.GetEnumerator(), predicate);
         }
 
         // WhereIndexedEnumerable<T, TEnumerator>
@@ -356,7 +356,7 @@ namespace CodeMania.FastLinq
             Func<TResult, int, bool> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
-            return WhereIndexedEnumerable<TResult>.From(source.GetEnumerator(), predicate);
+            return WhereIndexedEnumerable.From(source.GetEnumerator(), predicate);
         }
 
         public static WhereIndexedEnumerable<TResult, SelectEnumerable<TSource, TSrcArg, TResult, TEnumerator>.Enumerator> Where<TSource, TSrcArg, TResult, TEnumerator>(
@@ -364,7 +364,7 @@ namespace CodeMania.FastLinq
             Func<TResult, int, bool> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
-            return WhereIndexedEnumerable<TResult>.From(source.GetEnumerator(), predicate);
+            return WhereIndexedEnumerable.From(source.GetEnumerator(), predicate);
         }
 
         public static WhereIndexedEnumerable<TResult, SelectIndexedEnumerable<TSource, TResult, TEnumerator>.Enumerator> Where<TSource, TResult, TEnumerator>(
@@ -372,7 +372,7 @@ namespace CodeMania.FastLinq
             Func<TResult, int, bool> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
-            return WhereIndexedEnumerable<TResult>.From(source.GetEnumerator(), predicate);
+            return WhereIndexedEnumerable.From(source.GetEnumerator(), predicate);
         }
 
         public static WhereIndexedEnumerable<TResult, SelectIndexedEnumerable<TSource, TSrcArg, TResult, TEnumerator>.Enumerator> Where<TSource, TSrcArg, TResult, TEnumerator>(
@@ -380,7 +380,7 @@ namespace CodeMania.FastLinq
             Func<TResult, int, bool> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
-            return WhereIndexedEnumerable<TResult>.From(source.GetEnumerator(), predicate);
+            return WhereIndexedEnumerable.From(source.GetEnumerator(), predicate);
         }
 
         #endregion

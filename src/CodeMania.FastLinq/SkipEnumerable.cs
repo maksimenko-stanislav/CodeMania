@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CodeMania.FastLinq
 {
-    public static class SkipEnumerable<T>
+    internal static class SkipEnumerable<T>
     {
         internal static SkipEnumerable<T, TEnumerator> From<TEnumerator>(TEnumerator enumerator, int count)
             where TEnumerator : IEnumerator<T>

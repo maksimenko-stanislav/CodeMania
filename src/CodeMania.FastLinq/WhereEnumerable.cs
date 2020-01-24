@@ -4,15 +4,15 @@ using System.Collections.Generic;
 
 namespace CodeMania.FastLinq
 {
-    public static class WhereEnumerable<T>
+    internal static class WhereEnumerable
     {
-        internal static WhereEnumerable<T, TEnumerator> From<TEnumerator>(TEnumerator enumerator, Func<T, bool> predicate)
+        internal static WhereEnumerable<T, TEnumerator> From<T, TEnumerator>(TEnumerator enumerator, Func<T, bool> predicate)
             where TEnumerator : IEnumerator<T>
         {
             return new WhereEnumerable<T, TEnumerator>(enumerator, predicate ?? throw new ArgumentNullException(nameof(predicate)));
         }
 
-        internal static WhereEnumerable<T, TArgument, TEnumerator> From<TArgument, TEnumerator>(TEnumerator enumerator, TArgument argument, Predicate<T, TArgument> predicate)
+        internal static WhereEnumerable<T, TArgument, TEnumerator> From<T, TArgument, TEnumerator>(TEnumerator enumerator, TArgument argument, Predicate<T, TArgument> predicate)
             where TEnumerator : IEnumerator<T>
         {
             return new WhereEnumerable<T, TArgument, TEnumerator>(enumerator, argument, predicate ?? throw new ArgumentNullException(nameof(predicate)));
