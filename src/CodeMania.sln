@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeMania.FastLinq", "CodeM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeMania.FastLinq.UnitTests", "CodeMania.FastLinq.UnitTests\CodeMania.FastLinq.UnitTests.csproj", "{B81AA197-0951-425F-B19C-0DD681668755}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeMania.FastLinq.Benchmarks", "CodeMania.FastLinq.Benchmarks\CodeMania.FastLinq.Benchmarks.csproj", "{8108C8C6-324E-47F3-AABE-8BC435D678DD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{B81AA197-0951-425F-B19C-0DD681668755}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B81AA197-0951-425F-B19C-0DD681668755}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B81AA197-0951-425F-B19C-0DD681668755}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8108C8C6-324E-47F3-AABE-8BC435D678DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8108C8C6-324E-47F3-AABE-8BC435D678DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8108C8C6-324E-47F3-AABE-8BC435D678DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8108C8C6-324E-47F3-AABE-8BC435D678DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
