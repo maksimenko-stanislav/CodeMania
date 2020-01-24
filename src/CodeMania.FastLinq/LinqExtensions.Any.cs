@@ -290,7 +290,7 @@ namespace CodeMania.FastLinq
         public static bool Any<T, TSrcArg, TArg, TEnumerator>(
             this WhereIndexedEnumerable<T, TSrcArg, TEnumerator> source,
             TArg arg,
-            ParametrizedPredicate<T, TArg> predicate)
+            Predicate<T, TArg> predicate)
             where TEnumerator : IEnumerator<T>
         {
             CheckPredicate(predicate);
@@ -307,7 +307,7 @@ namespace CodeMania.FastLinq
         public static bool Any<T, TSrcArg, TArg, TEnumerator>(
             this WhereIndexedEnumerable<T, TSrcArg, TEnumerator> source,
             TArg arg,
-            ParametrizedIndexedPredicate<T, TArg> predicate)
+            IndexedPredicate<T, TArg> predicate)
             where TEnumerator : IEnumerator<T>
         {
             CheckPredicate(predicate);
@@ -325,7 +325,7 @@ namespace CodeMania.FastLinq
         public static bool Any<T, TSrcArg, TArg, TEnumerator>(
             this WhereEnumerable<T, TSrcArg, TEnumerator> source,
             TArg arg,
-            ParametrizedPredicate<T, TArg> predicate)
+            Predicate<T, TArg> predicate)
             where TEnumerator : IEnumerator<T>
         {
             CheckPredicate(predicate);
@@ -342,7 +342,7 @@ namespace CodeMania.FastLinq
         public static bool Any<T, TSrcArg, TArg, TEnumerator>(
             this WhereEnumerable<T, TSrcArg, TEnumerator> source,
             TArg arg,
-            ParametrizedIndexedPredicate<T, TArg> predicate)
+            IndexedPredicate<T, TArg> predicate)
             where TEnumerator : IEnumerator<T>
         {
             CheckPredicate(predicate);
@@ -360,7 +360,7 @@ namespace CodeMania.FastLinq
         public static bool Any<T, TArg, TEnumerator>(
             this WhereIndexedEnumerable<T, TEnumerator> source,
             TArg arg,
-            ParametrizedPredicate<T, TArg> predicate)
+            Predicate<T, TArg> predicate)
             where TEnumerator : IEnumerator<T>
         {
             CheckPredicate(predicate);
@@ -377,7 +377,7 @@ namespace CodeMania.FastLinq
         public static bool Any<T, TArg, TEnumerator>(
             this WhereIndexedEnumerable<T, TEnumerator> source,
             TArg arg,
-            ParametrizedIndexedPredicate<T, TArg> predicate)
+            IndexedPredicate<T, TArg> predicate)
             where TEnumerator : IEnumerator<T>
         {
             CheckPredicate(predicate);
@@ -395,7 +395,7 @@ namespace CodeMania.FastLinq
         public static bool Any<T, TArg, TEnumerator>(
             this WhereEnumerable<T, TEnumerator> source,
             TArg arg,
-            ParametrizedPredicate<T, TArg> predicate)
+            Predicate<T, TArg> predicate)
             where TEnumerator : IEnumerator<T>
         {
             CheckPredicate(predicate);
@@ -412,7 +412,7 @@ namespace CodeMania.FastLinq
         public static bool Any<T, TArg, TEnumerator>(
             this WhereEnumerable<T, TEnumerator> source,
             TArg arg,
-            ParametrizedIndexedPredicate<T, TArg> predicate)
+            IndexedPredicate<T, TArg> predicate)
             where TEnumerator : IEnumerator<T>
         {
             CheckPredicate(predicate);
@@ -589,7 +589,7 @@ namespace CodeMania.FastLinq
             return false;
         }
 
-        public static bool Any<TSource, TArg, TResult, TEnumerator>(this SelectEnumerable<TSource, TResult, TEnumerator> source, TArg arg, ParametrizedPredicate<TResult, TArg> predicate)
+        public static bool Any<TSource, TArg, TResult, TEnumerator>(this SelectEnumerable<TSource, TResult, TEnumerator> source, TArg arg, Predicate<TResult, TArg> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
             CheckPredicate(predicate);
@@ -603,7 +603,7 @@ namespace CodeMania.FastLinq
             return false;
         }
 
-        public static bool Any<TSource, TArg, TResult, TEnumerator>(this SelectEnumerable<TSource, TResult, TEnumerator> source, TArg arg, ParametrizedIndexedPredicate<TResult, TArg> predicate)
+        public static bool Any<TSource, TArg, TResult, TEnumerator>(this SelectEnumerable<TSource, TResult, TEnumerator> source, TArg arg, IndexedPredicate<TResult, TArg> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
             CheckPredicate(predicate);
@@ -618,7 +618,7 @@ namespace CodeMania.FastLinq
             return false;
         }
 
-        public static bool Any<TSource, TArg, TResult, TEnumerator>(this SelectIndexedEnumerable<TSource, TResult, TEnumerator> source, TArg arg, ParametrizedPredicate<TResult, TArg> predicate)
+        public static bool Any<TSource, TArg, TResult, TEnumerator>(this SelectIndexedEnumerable<TSource, TResult, TEnumerator> source, TArg arg, Predicate<TResult, TArg> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
             CheckPredicate(predicate);
@@ -632,7 +632,7 @@ namespace CodeMania.FastLinq
             return false;
         }
 
-        public static bool Any<TSource, TArg, TResult, TEnumerator>(this SelectIndexedEnumerable<TSource, TResult, TEnumerator> source, TArg arg, ParametrizedIndexedPredicate<TResult, TArg> predicate)
+        public static bool Any<TSource, TArg, TResult, TEnumerator>(this SelectIndexedEnumerable<TSource, TResult, TEnumerator> source, TArg arg, IndexedPredicate<TResult, TArg> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
             CheckPredicate(predicate);
@@ -647,7 +647,7 @@ namespace CodeMania.FastLinq
             return false;
         }
 
-        public static bool Any<TSource, TArg, TSrcArg, TResult, TEnumerator>(this SelectEnumerable<TSource, TSrcArg, TResult, TEnumerator> source, TArg arg, ParametrizedPredicate<TResult, TArg> predicate)
+        public static bool Any<TSource, TArg, TSrcArg, TResult, TEnumerator>(this SelectEnumerable<TSource, TSrcArg, TResult, TEnumerator> source, TArg arg, Predicate<TResult, TArg> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
             CheckPredicate(predicate);
@@ -661,7 +661,7 @@ namespace CodeMania.FastLinq
             return false;
         }
 
-        public static bool Any<TSource, TArg, TSrcArg, TResult, TEnumerator>(this SelectEnumerable<TSource, TSrcArg, TResult, TEnumerator> source, TArg arg, ParametrizedIndexedPredicate<TResult, TArg> predicate)
+        public static bool Any<TSource, TArg, TSrcArg, TResult, TEnumerator>(this SelectEnumerable<TSource, TSrcArg, TResult, TEnumerator> source, TArg arg, IndexedPredicate<TResult, TArg> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
             CheckPredicate(predicate);
@@ -676,7 +676,7 @@ namespace CodeMania.FastLinq
             return false;
         }
 
-        public static bool Any<TSource, TArg, TSrcArg, TResult, TEnumerator>(this SelectIndexedEnumerable<TSource, TSrcArg, TResult, TEnumerator> source, TArg arg, ParametrizedPredicate<TResult, TArg> predicate)
+        public static bool Any<TSource, TArg, TSrcArg, TResult, TEnumerator>(this SelectIndexedEnumerable<TSource, TSrcArg, TResult, TEnumerator> source, TArg arg, Predicate<TResult, TArg> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
             CheckPredicate(predicate);
@@ -690,7 +690,7 @@ namespace CodeMania.FastLinq
             return false;
         }
 
-        public static bool Any<TSource, TArg, TSrcArg, TResult, TEnumerator>(this SelectIndexedEnumerable<TSource, TSrcArg, TResult, TEnumerator> source, TArg arg, ParametrizedIndexedPredicate<TResult, TArg> predicate)
+        public static bool Any<TSource, TArg, TSrcArg, TResult, TEnumerator>(this SelectIndexedEnumerable<TSource, TSrcArg, TResult, TEnumerator> source, TArg arg, IndexedPredicate<TResult, TArg> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
             CheckPredicate(predicate);

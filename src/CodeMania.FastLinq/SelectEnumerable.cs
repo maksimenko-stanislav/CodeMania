@@ -78,14 +78,14 @@ namespace CodeMania.FastLinq
         where TEnumerator : IEnumerator<TSource>
     {
         private TEnumerator enumerator;
-        private readonly ParametrizedProjection<TSource, TArg, TResult> selector;
-        private readonly TArg argument;
+        private readonly Selector<TSource, TArg, TResult> selector;
+        private readonly TArg arg;
 
-        internal SelectEnumerable(TEnumerator enumerator, TArg argument, ParametrizedProjection<TSource, TArg, TResult> predicate)
+        internal SelectEnumerable(TEnumerator enumerator, TArg arg, Selector<TSource, TArg, TResult> selector)
         {
             this.enumerator = enumerator;
-            this.argument = argument;
-            this.selector = predicate ?? throw new ArgumentNullException(nameof(predicate));
+            this.arg = arg;
+            this.selector = selector ?? throw new ArgumentNullException(nameof(selector));
         }
 
         public Enumerator GetEnumerator()
@@ -121,7 +121,7 @@ namespace CodeMania.FastLinq
 
                 if (hasItems)
                 {
-                    current = enumerable.selector(enumerator.Current, enumerable.argument);
+                    current = enumerable.selector(enumerator.Current, enumerable.arg);
 
                     return true;
                 }

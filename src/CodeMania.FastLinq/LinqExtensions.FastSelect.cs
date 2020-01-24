@@ -12,7 +12,8 @@ namespace CodeMania.FastLinq
             Func<TSource, TResult> selector)
         {
             return new SelectEnumerable<TSource, TResult, IEnumerator<TSource>>(
-                CheckSource(source).GetEnumerator(), CheckSelector(selector));
+                CheckSource(source).GetEnumerator(),
+                CheckSelector(selector));
         }
 
         public static SelectEnumerable<TSource, TResult, List<TSource>.Enumerator> FastSelect<TSource, TResult>(
@@ -20,7 +21,8 @@ namespace CodeMania.FastLinq
             Func<TSource, TResult> selector)
         {
             return new SelectEnumerable<TSource, TResult, List<TSource>.Enumerator>(
-                CheckSource(source).GetEnumerator(), CheckSelector(selector));
+                CheckSource(source).GetEnumerator(),
+                CheckSelector(selector));
         }
 
         public static SelectEnumerable<TSource, TResult, ArrayEnumerable<TSource>.Enumerator> FastSelect<TSource, TResult>(
@@ -37,7 +39,8 @@ namespace CodeMania.FastLinq
             Func<TSource, int, TResult> selector)
         {
             return new SelectIndexedEnumerable<TSource, TResult, IEnumerator<TSource>>(
-                CheckSource(source).GetEnumerator(), CheckSelector(selector));
+                CheckSource(source).GetEnumerator(),
+                CheckSelector(selector));
         }
 
         public static SelectIndexedEnumerable<TSource, TResult, List<TSource>.Enumerator> FastSelect<TSource, TResult>(
@@ -45,7 +48,8 @@ namespace CodeMania.FastLinq
             Func<TSource, int, TResult> selector)
         {
             return new SelectIndexedEnumerable<TSource, TResult, List<TSource>.Enumerator>(
-                CheckSource(source).GetEnumerator(), CheckSelector(selector));
+                CheckSource(source).GetEnumerator(),
+                CheckSelector(selector));
         }
 
         public static SelectIndexedEnumerable<TSource, TResult, ArrayEnumerable<TSource>.Enumerator> FastSelect<TSource, TResult>(

@@ -81,10 +81,10 @@ namespace CodeMania.FastLinq
         where TEnumerator : IEnumerator<TSource>
     {
         private TEnumerator enumerator;
-        private readonly ParametrizedIndexedProjection<TSource, TArg, TResult> selector;
+        private readonly IndexedSelector<TSource, TArg, TResult> selector;
         private readonly TArg argument;
 
-        internal SelectIndexedEnumerable(TEnumerator enumerator, TArg argument, ParametrizedIndexedProjection<TSource, TArg, TResult> selector)
+        internal SelectIndexedEnumerable(TEnumerator enumerator, TArg argument, IndexedSelector<TSource, TArg, TResult> selector)
         {
             this.enumerator = enumerator;
             this.argument = argument;

@@ -86,9 +86,9 @@ namespace CodeMania.FastLinq
     {
         private TEnumerator enumerator;
         private readonly TArgument argument;
-        private readonly ParametrizedPredicate<T, TArgument> predicate;
+        private readonly Predicate<T, TArgument> predicate;
 
-        internal WhereEnumerable(TEnumerator enumerator, TArgument argument, ParametrizedPredicate<T, TArgument> predicate)
+        internal WhereEnumerable(TEnumerator enumerator, TArgument argument, Predicate<T, TArgument> predicate)
         {
             this.enumerator = enumerator;
             this.argument = argument;

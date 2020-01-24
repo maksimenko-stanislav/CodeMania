@@ -10,7 +10,7 @@ namespace CodeMania.FastLinq
 
         #region First
 
-        public static T First<T, TArg>(this IEnumerable<T> source, TArg arg, ParametrizedPredicate<T, TArg> predicate)
+        public static T First<T, TArg>(this IEnumerable<T> source, TArg arg, Predicate<T, TArg> predicate)
         {
             CheckSource(source);
             CheckPredicate(predicate);
@@ -46,7 +46,7 @@ namespace CodeMania.FastLinq
             throw new InvalidOperationException(NoMatchingElement);
         }
 
-        public static T First<T, TArg>(this List<T> source, TArg arg, ParametrizedPredicate<T, TArg> predicate)
+        public static T First<T, TArg>(this List<T> source, TArg arg, Predicate<T, TArg> predicate)
         {
             CheckSource(source);
             CheckPredicate(predicate);
@@ -62,7 +62,7 @@ namespace CodeMania.FastLinq
             throw new InvalidOperationException(NoMatchingElement);
         }
 
-        public static T First<T, TArg>(this T[] source, TArg arg, ParametrizedPredicate<T, TArg> predicate)
+        public static T First<T, TArg>(this T[] source, TArg arg, Predicate<T, TArg> predicate)
         {
             CheckSource(source);
             CheckPredicate(predicate);
@@ -78,7 +78,7 @@ namespace CodeMania.FastLinq
             throw new InvalidOperationException(NoMatchingElement);
         }
 
-        public static T First<T, TArg>(this HashSet<T> source, TArg arg, ParametrizedPredicate<T, TArg> predicate)
+        public static T First<T, TArg>(this HashSet<T> source, TArg arg, Predicate<T, TArg> predicate)
         {
             CheckSource(source);
             CheckPredicate(predicate);
@@ -94,7 +94,7 @@ namespace CodeMania.FastLinq
             throw new InvalidOperationException(NoMatchingElement);
         }
 
-        public static T First<T, TArg>(this SortedSet<T> source, TArg arg, ParametrizedPredicate<T, TArg> predicate)
+        public static T First<T, TArg>(this SortedSet<T> source, TArg arg, Predicate<T, TArg> predicate)
         {
             CheckSource(source);
             CheckPredicate(predicate);
@@ -110,7 +110,7 @@ namespace CodeMania.FastLinq
             throw new InvalidOperationException(NoMatchingElement);
         }
 
-        public static KeyValuePair<TKey, TValue> First<TKey, TValue, TArg>(this Dictionary<TKey, TValue> source, TArg arg, ParametrizedPredicate<KeyValuePair<TKey, TValue>, TArg> predicate)
+        public static KeyValuePair<TKey, TValue> First<TKey, TValue, TArg>(this Dictionary<TKey, TValue> source, TArg arg, Predicate<KeyValuePair<TKey, TValue>, TArg> predicate)
         {
             CheckSource(source);
             CheckPredicate(predicate);
@@ -126,7 +126,7 @@ namespace CodeMania.FastLinq
             throw new InvalidOperationException(NoMatchingElement);
         }
 
-        public static KeyValuePair<TKey, TValue> First<TKey, TValue, TArg>(this SortedDictionary<TKey, TValue> source, TArg arg, ParametrizedPredicate<KeyValuePair<TKey, TValue>, TArg> predicate)
+        public static KeyValuePair<TKey, TValue> First<TKey, TValue, TArg>(this SortedDictionary<TKey, TValue> source, TArg arg, Predicate<KeyValuePair<TKey, TValue>, TArg> predicate)
         {
             CheckSource(source);
             CheckPredicate(predicate);
@@ -438,7 +438,7 @@ namespace CodeMania.FastLinq
             throw new InvalidOperationException(NoMatchingElement);
         }
 
-        public static T First<T, TArg, TEnumerator>(this WhereEnumerable<T, TEnumerator> source, TArg arg, ParametrizedPredicate<T, TArg> predicate)
+        public static T First<T, TArg, TEnumerator>(this WhereEnumerable<T, TEnumerator> source, TArg arg, Predicate<T, TArg> predicate)
             where TEnumerator : IEnumerator<T>
         {
             CheckPredicate(predicate);
@@ -452,7 +452,7 @@ namespace CodeMania.FastLinq
             throw new InvalidOperationException(NoMatchingElement);
         }
 
-        public static T First<T, TArg, TEnumerator>(this WhereEnumerable<T, TEnumerator> source, TArg arg, ParametrizedIndexedPredicate<T, TArg> predicate)
+        public static T First<T, TArg, TEnumerator>(this WhereEnumerable<T, TEnumerator> source, TArg arg, IndexedPredicate<T, TArg> predicate)
             where TEnumerator : IEnumerator<T>
         {
             CheckPredicate(predicate);
@@ -467,7 +467,7 @@ namespace CodeMania.FastLinq
             throw new InvalidOperationException(NoMatchingElement);
         }
 
-        public static T First<T, TSrcArg, TArg, TEnumerator>(this WhereEnumerable<T, TSrcArg, TEnumerator> source, TArg arg, ParametrizedPredicate<T, TArg> predicate)
+        public static T First<T, TSrcArg, TArg, TEnumerator>(this WhereEnumerable<T, TSrcArg, TEnumerator> source, TArg arg, Predicate<T, TArg> predicate)
             where TEnumerator : IEnumerator<T>
         {
             CheckPredicate(predicate);
@@ -481,7 +481,7 @@ namespace CodeMania.FastLinq
             throw new InvalidOperationException(NoMatchingElement);
         }
 
-        public static T First<T, TSrcArg, TArg, TEnumerator>(this WhereEnumerable<T, TSrcArg, TEnumerator> source, TArg arg, ParametrizedIndexedPredicate<T, TArg> predicate)
+        public static T First<T, TSrcArg, TArg, TEnumerator>(this WhereEnumerable<T, TSrcArg, TEnumerator> source, TArg arg, IndexedPredicate<T, TArg> predicate)
             where TEnumerator : IEnumerator<T>
         {
             CheckPredicate(predicate);
@@ -496,7 +496,7 @@ namespace CodeMania.FastLinq
             throw new InvalidOperationException(NoMatchingElement);
         }
 
-        public static T First<T, TArg, TEnumerator>(this WhereIndexedEnumerable<T, TEnumerator> source, TArg arg, ParametrizedPredicate<T, TArg> predicate)
+        public static T First<T, TArg, TEnumerator>(this WhereIndexedEnumerable<T, TEnumerator> source, TArg arg, Predicate<T, TArg> predicate)
             where TEnumerator : IEnumerator<T>
         {
             CheckPredicate(predicate);
@@ -510,7 +510,7 @@ namespace CodeMania.FastLinq
             throw new InvalidOperationException(NoMatchingElement);
         }
 
-        public static T First<T, TArg, TEnumerator>(this WhereIndexedEnumerable<T, TEnumerator> source, TArg arg, ParametrizedIndexedPredicate<T, TArg> predicate)
+        public static T First<T, TArg, TEnumerator>(this WhereIndexedEnumerable<T, TEnumerator> source, TArg arg, IndexedPredicate<T, TArg> predicate)
             where TEnumerator : IEnumerator<T>
         {
             CheckPredicate(predicate);
@@ -525,7 +525,7 @@ namespace CodeMania.FastLinq
             throw new InvalidOperationException(NoMatchingElement);
         }
 
-        public static T First<T, TSrcArg, TArg, TEnumerator>(this WhereIndexedEnumerable<T, TSrcArg, TEnumerator> source, TArg arg, ParametrizedPredicate<T, TArg> predicate)
+        public static T First<T, TSrcArg, TArg, TEnumerator>(this WhereIndexedEnumerable<T, TSrcArg, TEnumerator> source, TArg arg, Predicate<T, TArg> predicate)
             where TEnumerator : IEnumerator<T>
         {
             CheckPredicate(predicate);
@@ -539,7 +539,7 @@ namespace CodeMania.FastLinq
             throw new InvalidOperationException(NoMatchingElement);
         }
 
-        public static T First<T, TSrcArg, TArg, TEnumerator>(this WhereIndexedEnumerable<T, TSrcArg, TEnumerator> source, TArg arg, ParametrizedIndexedPredicate<T, TArg> predicate)
+        public static T First<T, TSrcArg, TArg, TEnumerator>(this WhereIndexedEnumerable<T, TSrcArg, TEnumerator> source, TArg arg, IndexedPredicate<T, TArg> predicate)
             where TEnumerator : IEnumerator<T>
         {
             CheckPredicate(predicate);
@@ -716,9 +716,7 @@ namespace CodeMania.FastLinq
             throw new InvalidOperationException(NoMatchingElement);
         }
 
-        // TODO: parametrized first
-
-        public static TResult First<TSource, TResult, TArg, TEnumerator>(this SelectEnumerable<TSource, TResult, TEnumerator> source, TArg arg, ParametrizedPredicate<TResult, TArg> predicate)
+        public static TResult First<TSource, TResult, TArg, TEnumerator>(this SelectEnumerable<TSource, TResult, TEnumerator> source, TArg arg, Predicate<TResult, TArg> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
             CheckPredicate(predicate);
@@ -732,7 +730,7 @@ namespace CodeMania.FastLinq
             throw new InvalidOperationException(NoMatchingElement);
         }
 
-        public static TResult First<TSource, TResult, TArg, TEnumerator>(this SelectEnumerable<TSource, TResult, TEnumerator> source, TArg arg, ParametrizedIndexedPredicate<TResult, TArg> predicate)
+        public static TResult First<TSource, TResult, TArg, TEnumerator>(this SelectEnumerable<TSource, TResult, TEnumerator> source, TArg arg, IndexedPredicate<TResult, TArg> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
             CheckPredicate(predicate);
@@ -747,7 +745,7 @@ namespace CodeMania.FastLinq
             throw new InvalidOperationException(NoMatchingElement);
         }
 
-        public static TResult First<TSource, TResult, TArg, TEnumerator>(this SelectIndexedEnumerable<TSource, TResult, TEnumerator> source, TArg arg, ParametrizedPredicate<TResult, TArg> predicate)
+        public static TResult First<TSource, TResult, TArg, TEnumerator>(this SelectIndexedEnumerable<TSource, TResult, TEnumerator> source, TArg arg, Predicate<TResult, TArg> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
             CheckPredicate(predicate);
@@ -761,7 +759,7 @@ namespace CodeMania.FastLinq
             throw new InvalidOperationException(NoMatchingElement);
         }
 
-        public static TResult First<TSource, TResult, TArg, TEnumerator>(this SelectIndexedEnumerable<TSource, TResult, TEnumerator> source, TArg arg, ParametrizedIndexedPredicate<TResult, TArg> predicate)
+        public static TResult First<TSource, TResult, TArg, TEnumerator>(this SelectIndexedEnumerable<TSource, TResult, TEnumerator> source, TArg arg, IndexedPredicate<TResult, TArg> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
             CheckPredicate(predicate);
@@ -776,7 +774,7 @@ namespace CodeMania.FastLinq
             throw new InvalidOperationException(NoMatchingElement);
         }
 
-        public static TResult First<TSource, TSrcArg, TArg, TResult, TEnumerator>(this SelectEnumerable<TSource, TSrcArg, TResult, TEnumerator> source, TArg arg, ParametrizedPredicate<TResult, TArg> predicate)
+        public static TResult First<TSource, TSrcArg, TArg, TResult, TEnumerator>(this SelectEnumerable<TSource, TSrcArg, TResult, TEnumerator> source, TArg arg, Predicate<TResult, TArg> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
             CheckPredicate(predicate);
@@ -790,7 +788,7 @@ namespace CodeMania.FastLinq
             throw new InvalidOperationException(NoMatchingElement);
         }
 
-        public static TResult First<TSource, TSrcArg, TArg, TResult, TEnumerator>(this SelectEnumerable<TSource, TSrcArg, TResult, TEnumerator> source, TArg arg, ParametrizedIndexedPredicate<TResult, TArg> predicate)
+        public static TResult First<TSource, TSrcArg, TArg, TResult, TEnumerator>(this SelectEnumerable<TSource, TSrcArg, TResult, TEnumerator> source, TArg arg, IndexedPredicate<TResult, TArg> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
             CheckPredicate(predicate);
@@ -805,7 +803,7 @@ namespace CodeMania.FastLinq
             throw new InvalidOperationException(NoMatchingElement);
         }
 
-        public static TResult First<TSource, TSrcArg, TArg, TResult, TEnumerator>(this SelectIndexedEnumerable<TSource, TSrcArg, TResult, TEnumerator> source, TArg arg, ParametrizedPredicate<TResult, TArg> predicate)
+        public static TResult First<TSource, TSrcArg, TArg, TResult, TEnumerator>(this SelectIndexedEnumerable<TSource, TSrcArg, TResult, TEnumerator> source, TArg arg, Predicate<TResult, TArg> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
             CheckPredicate(predicate);
@@ -819,7 +817,7 @@ namespace CodeMania.FastLinq
             throw new InvalidOperationException(NoMatchingElement);
         }
 
-        public static TResult First<TSource, TSrcArg, TArg, TResult, TEnumerator>(this SelectIndexedEnumerable<TSource, TSrcArg, TResult, TEnumerator> source, TArg arg, ParametrizedIndexedPredicate<TResult, TArg> predicate)
+        public static TResult First<TSource, TSrcArg, TArg, TResult, TEnumerator>(this SelectIndexedEnumerable<TSource, TSrcArg, TResult, TEnumerator> source, TArg arg, IndexedPredicate<TResult, TArg> predicate)
             where TEnumerator : IEnumerator<TSource>
         {
             CheckPredicate(predicate);
