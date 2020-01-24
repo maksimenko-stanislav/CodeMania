@@ -3,6 +3,8 @@ using System.Runtime.CompilerServices;
 
 namespace CodeMania.FastLinq
 {
+    // TODO: Add Single[OrDefault] methods
+    // TODO: Add Skip/Take methods
     public static partial class LinqExtensions
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
