@@ -72,7 +72,7 @@ namespace CodeMania.Core.Benchmarks.Benchmarks
 	}
 
 	[MemoryDiagnoser]
-	[CoreJob(true), RPlotExporter, RankColumn]
+	[SimpleJob(baseline: true), RPlotExporter, RankColumn]
 	public class QueryStringSerializerBenchmarks
 	{
 		private readonly QueryStringSerializer<TestEntity1> queryStringSerializer = QueryStringSerializerBuilder.Create<TestEntity1>().Build();
