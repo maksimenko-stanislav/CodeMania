@@ -1,0 +1,51 @@
+name: Release CD
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+
+      - name: Fetch tags and create reflog
+        run: |
+          git fetch --tags
+          git branch --create-reflog master origin/master
+        shell: powershell
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '3.1.100'
+
+      - name: Generate lcov report
+        id: build
+        run: .\build.ps1 --target='test:coverage' --reportTypes='lcov' --reportDir='coverage'
+        shell: powershell
+
+      - name: Publish test coverage
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: Create nuget packages
+      #   run: .\build.ps1 --target='nuget:package' --exclusive
+      #   shell: powershell
+
+      # - name: Publish nuget packages
+      #   env:
+      #     NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      #   run: .\build.ps1 --target='nuget:publish' --exclusive
+      #   shell: powershell
+
+      - name: Tag commit
+        uses: tvdias/github-tagger@v0.0.1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.build.outputs.version }}
