@@ -6,7 +6,7 @@ using BenchmarkDotNet.Attributes;
 namespace CodeMania.Core.Benchmarks.Benchmarks
 {
 	[MemoryDiagnoser]
-	[CoreJob(true), RPlotExporter, RankColumn]
+	[SimpleJob(baseline: true), RPlotExporter, RankColumn]
 	public class MethodCallBenchmark
 	{
 		private readonly MethodInfo methodToCall;
