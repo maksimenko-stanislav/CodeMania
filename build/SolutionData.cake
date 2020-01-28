@@ -8,7 +8,7 @@ public class SolutionData
     public SolutionData(ISetupContext context)
     {
         this.context = context;
-        this.SolutionPath = context.Argument<string>(SolutionPathArgument, context.GetFiles("*.sln").First().FullPath);
+        this.SolutionPath = context.Argument<string>(SolutionPathArgument, context.GetFiles("**/*.sln").First().FullPath);
         this.TestProjectSuffixes = context.Argument(TestProjectsSuffixesArgument, "Tests").Split(';');
         this.BenchmarkProjectsSuffixes = context.Argument(BenchmarkProjectsSuffixesArgument, "Benchmarks").Split(';');
     }
