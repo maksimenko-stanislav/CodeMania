@@ -36,17 +36,17 @@ jobs:
         run: .\build.ps1 --target='test:coverage' --reportTypes='lcov' --reportDir='coverage' --exclusive
         shell: powershell
 
-    #   - name: Publish test coverage
-    #     uses: coverallsapp/github-action@master
-    #     with:
-    #       github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish test coverage
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create nuget packages
         run: .\build.ps1 --target='nuget:package' --exclusive
         shell: powershell
 
-    #   - name: Publish nuget packages
-    #     env:
-    #       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-    #     run: .\build.ps1 -t nuget:publish
-    #     shell: powershell
+      - name: Publish nuget packages
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: .\build.ps1 -t nuget:publish
+        shell: powershell
