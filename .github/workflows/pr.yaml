@@ -1,4 +1,4 @@
-name: 'Pull-Request CI'
+name: 'Pull Request CI'
 
 on:
   pull_request:
@@ -27,16 +27,9 @@ jobs:
         with:
           dotnet-version: '3.1.100'
 
-      - name: Build solution
-        run: .\build.ps1 --target='build'
-        shell: powershell
-
-      - name: Run tests
-        run: .\build.ps1 --target='test' --exclusive
-        shell: powershell
-
       - name: Generate lcov report
-        run: .\build.ps1 --target='test:coverage' --reportTypes='lcov' --reportDir='coverage' --exclusive
+        id: build
+        run: .\build.ps1 --target='test:coverage' --reportTypes='lcov' --reportDir='coverage'
         shell: powershell
 
       - name: Publish test coverage
