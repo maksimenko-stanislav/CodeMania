@@ -34,15 +34,15 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create nuget packages
-        run: .\build.ps1 --target='nuget:package' --exclusive
-        shell: powershell
+      # - name: Create nuget packages
+      #   run: .\build.ps1 --target='nuget:package' --exclusive
+      #   shell: powershell
 
-      - name: Publish nuget packages
-        env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-        run: .\build.ps1 --target='nuget:publish' --exclusive
-        shell: powershell
+      # - name: Publish nuget packages
+      #   env:
+      #     NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      #   run: .\build.ps1 --target='nuget:publish' --exclusive
+      #   shell: powershell
 
       - name: Tag commit
         uses: tvdias/github-tagger@v0.0.1
