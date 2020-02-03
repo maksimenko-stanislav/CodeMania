@@ -1,22 +1,14 @@
-﻿# Visual Studio
-.vs/
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/src/.vs
 *.suo
 *.user
-[Bb]in/
-[Oo]bj/
-[Pp]ackages/
-*.user
-
-# ReSharper
-*.DotSettings
 _ReSharper.*
-
-# Cake
-[Tt]ools/
-
-# Testing Frameworks
-[Cc]overage/
-[Tt]est[Rr]esults/
-
-# NuGet
-[Aa]rtifacts/
+bin
+obj
+packages
+*.user
+.vs
+*.DotSettings
