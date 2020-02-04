@@ -4,7 +4,7 @@ using CodeMania.TestData.TestDataTypes;
 namespace CodeMania.Core.Benchmarks.Benchmarks
 {
 	[MemoryDiagnoser]
-	[CoreJob(true), RPlotExporter, RankColumn]
+	[SimpleJob(baseline: true), RPlotExporter, RankColumn]
 	public class FlagsEnumToStringBenchmark
 	{
 		private Flags fileAccess = Flags.Eight | Flags.Four | Flags.Two;

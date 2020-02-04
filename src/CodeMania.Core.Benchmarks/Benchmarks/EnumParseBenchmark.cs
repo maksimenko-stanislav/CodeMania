@@ -5,7 +5,7 @@ using CodeMania.TestData.TestDataTypes;
 namespace CodeMania.Core.Benchmarks.Benchmarks
 {
 	[MemoryDiagnoser]
-	[CoreJob(true), RPlotExporter, RankColumn]
+	[SimpleJob(baseline: true), RPlotExporter, RankColumn]
 	public class EnumParseBenchmark
 	{
 		public string fileAccess = NonFlags.Four.ToString();

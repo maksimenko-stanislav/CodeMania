@@ -67,7 +67,7 @@ namespace CodeMania.Core.Benchmarks.Benchmarks
     }
 
     [MemoryDiagnoser]
-    [CoreJob(true), RPlotExporter, RankColumn]
+    [SimpleJob(baseline: true), RPlotExporter, RankColumn]
     public class EqualityComparer_EqualsTests : EqualityComparerBenchmarkBase
     {
         [Benchmark(Baseline = true)]
@@ -84,7 +84,7 @@ namespace CodeMania.Core.Benchmarks.Benchmarks
     }
 
     [MemoryDiagnoser]
-    [CoreJob(true), RPlotExporter, RankColumn]
+    [SimpleJob(baseline: true), RPlotExporter, RankColumn]
     public class EqualityComparer_GetHashCode : EqualityComparerBenchmarkBase
     {
         [Benchmark(Baseline = true)]
