@@ -55,7 +55,9 @@ Task("Test")
          NoBuild = true,
          Configuration = data.Configuration,
          ResultsDirectory = data.TestData.TestResultsDirectory,
-         ArgumentCustomization = args => args.Append($"--logger trx")
+         ArgumentCustomization = args => args
+            .Append($"/p:Exclude=\"{data.CoverageData.ExcludeFromCoverage}\"")
+            .Append($"--logger trx")
       };
       var coverletSettings = new CoverletSettings {
          CollectCoverage = true,

@@ -5,6 +5,7 @@ public class CoverageData
     public const string CoverageDirectoryArgument = "coverageDir";
     public const string CoverageReportsDirectoryArgument = "reportDir";
     public const string CoverageReportTypesArgument = "reportTypes";
+    public const string ExcludeFromCoverageArgument = "excludeFromCoverage";
 
     public CoverageData(ISetupContext context)
     {
@@ -12,11 +13,13 @@ public class CoverageData
         this.CoverageDirectory = context.Argument<string>(CoverageDirectoryArgument, "./coverage");
         this.ReportsDirectory = context.Argument<string>(CoverageReportsDirectoryArgument, "./coverage/reports");
         this.ReportTypes = context.Argument<string>(CoverageReportTypesArgument, "Html");
+        this.ExcludeFromCoverage = context.Argument<string>(ExcludeFromCoverageArgument, "[CodeMania.TestData*]*");
     }
 
     public DirectoryPath CoverageDirectory { get; }
     public DirectoryPath ReportsDirectory { get; }
     public string ReportTypes { get; }
+    public string ExcludeFromCoverage { get; }
 
     public FilePathCollection GetReportFiles()
     {
