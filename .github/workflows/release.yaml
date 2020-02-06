@@ -26,7 +26,7 @@ jobs:
 
       - name: Generate lcov report
         id: build
-        run: .\build.ps1 --target='test:coverage' --reportTypes='lcov' --reportDir='coverage'
+        run: .\build.ps1 --target='test:coverage' --reportTypes='lcov' --reportDir='coverage' --excludeFromCoverage='[CodeMania.TestData*]*'
         shell: powershell
 
       - name: Publish test coverage
