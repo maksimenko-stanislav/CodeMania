@@ -13,7 +13,7 @@ public class CoverageData
         this.CoverageDirectory = context.Argument<string>(CoverageDirectoryArgument, "./coverage");
         this.ReportsDirectory = context.Argument<string>(CoverageReportsDirectoryArgument, "./coverage/reports");
         this.ReportTypes = context.Argument<string>(CoverageReportTypesArgument, "Html");
-        this.ExcludeFromCoverage = context.Argument<string>(ExcludeFromCoverageArgument, "[CodeMania.TestData*]*");
+        this.ExcludeFromCoverage = context.Argument<string>(ExcludeFromCoverageArgument, "");
     }
 
     public DirectoryPath CoverageDirectory { get; }
