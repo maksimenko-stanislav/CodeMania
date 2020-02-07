@@ -831,8 +831,56 @@ namespace CodeMania.FastLinq
             return default;
         }
 
-        #endregion
+        public static T FirstOrDefault<T, TEnumerator>(this SkipEnumerable<T, TEnumerator> source)
+            where TEnumerator : IEnumerator<T>
+        {
+            foreach (var item in source)
+            {
+                return item;
+            }
 
-        // TODO: Add Skip/Take support
+            return default;
+        }
+
+        public static T FirstOrDefault<T, TEnumerator>(this SkipEnumerable<T, TEnumerator> source, Func<T, bool> predicate)
+            where TEnumerator : IEnumerator<T>
+        {
+            CheckPredicate(predicate);
+
+            foreach (var item in source)
+            {
+                if (predicate(item))
+                    return item;
+            }
+
+            return default;
+        }
+
+        public static T FirstOrDefault<T, TEnumerator>(this TakeEnumerable<T, TEnumerator> source)
+            where TEnumerator : IEnumerator<T>
+        {
+            foreach (var item in source)
+            {
+                return item;
+            }
+
+            return default;
+        }
+
+        public static T FirstOrDefault<T, TEnumerator>(this TakeEnumerable<T, TEnumerator> source, Func<T, bool> predicate)
+            where TEnumerator : IEnumerator<T>
+        {
+            CheckPredicate(predicate);
+
+            foreach (var item in source)
+            {
+                if (predicate(item))
+                    return item;
+            }
+
+            return default;
+        }
+
+        #endregion
     }
 }

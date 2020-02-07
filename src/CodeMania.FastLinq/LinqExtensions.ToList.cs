@@ -183,8 +183,50 @@ namespace CodeMania.FastLinq
             return destination;
         }
 
-        #endregion
+        public static List<T> ToList<T, TEnumerator>(this SkipEnumerable<T, TEnumerator> enumerable)
+            where TEnumerator : IEnumerator<T>
+        {
+            return enumerable.AddToList(new List<T>());
+        }
 
-        // TODO: Add Skip/Take support
+        public static List<T> AddToList<T, TEnumerator>(this SkipEnumerable<T, TEnumerator> enumerable, List<T> destination)
+            where TEnumerator : IEnumerator<T>
+        {
+            if (destination == null)
+            {
+                throw new ArgumentNullException(nameof(destination));
+            }
+
+            foreach (var item in enumerable)
+            {
+                destination.Add(item);
+            }
+
+            return destination;
+        }
+
+        public static List<T> ToList<T, TEnumerator>(this TakeEnumerable<T, TEnumerator> enumerable)
+            where TEnumerator : IEnumerator<T>
+        {
+            return enumerable.AddToList(new List<T>());
+        }
+
+        public static List<T> AddToList<T, TEnumerator>(this TakeEnumerable<T, TEnumerator> enumerable, List<T> destination)
+            where TEnumerator : IEnumerator<T>
+        {
+            if (destination == null)
+            {
+                throw new ArgumentNullException(nameof(destination));
+            }
+
+            foreach (var item in enumerable)
+            {
+                destination.Add(item);
+            }
+
+            return destination;
+        }
+
+        #endregion
     }
 }

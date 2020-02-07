@@ -705,8 +705,56 @@ namespace CodeMania.FastLinq
             return false;
         }
 
-        #endregion
+        public static bool Any<T, TEnumerator>(this SkipEnumerable<T, TEnumerator> source)
+            where TEnumerator : IEnumerator<T>
+        {
+            foreach (var _ in source)
+            {
+                return true;
+            }
 
-        // TODO: Add Skip/Take support
+            return false;
+        }
+
+        public static bool Any<T, TEnumerator>(this SkipEnumerable<T, TEnumerator> source, Func<T, bool> predicate)
+            where TEnumerator : IEnumerator<T>
+        {
+            CheckPredicate(predicate);
+
+            foreach (var item in source)
+            {
+                if (predicate(item))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public static bool Any<T, TEnumerator>(this TakeEnumerable<T, TEnumerator> source)
+            where TEnumerator : IEnumerator<T>
+        {
+            foreach (var _ in source)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool Any<T, TEnumerator>(this TakeEnumerable<T, TEnumerator> source, Func<T, bool> predicate)
+            where TEnumerator : IEnumerator<T>
+        {
+            CheckPredicate(predicate);
+
+            foreach (var item in source)
+            {
+                if (predicate(item))
+                    return true;
+            }
+
+            return false;
+        }
+
+        #endregion
     }
 }

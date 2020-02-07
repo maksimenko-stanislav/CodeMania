@@ -383,8 +383,52 @@ namespace CodeMania.FastLinq
             return WhereIndexedEnumerable.From(source.GetEnumerator(), predicate);
         }
 
-        #endregion
+        public static WhereEnumerable<T, SkipEnumerable<T, TEnumerator>.Enumerator> Where<T, TEnumerator>(
+            this SkipEnumerable<T, TEnumerator> source,
+            Func<T, bool> predicate) where TEnumerator : IEnumerator<T>
+        {
+            return WhereEnumerable.From(source.GetEnumerator(), predicate);
+        }
 
-        // TODO: Add Skip/Take support
+        public static WhereEnumerable<T, TArg, SkipEnumerable<T, TEnumerator>.Enumerator> Where<T, TArg, TEnumerator>(
+            this SkipEnumerable<T, TEnumerator> source,
+            TArg arg,
+            Predicate<T, TArg> predicate) where TEnumerator : IEnumerator<T>
+        {
+            return WhereEnumerable.From(source.GetEnumerator(), arg, predicate);
+        }
+
+        public static WhereIndexedEnumerable<T, TArg, SkipEnumerable<T, TEnumerator>.Enumerator> Where<T, TArg, TEnumerator>(
+            this SkipEnumerable<T, TEnumerator> source,
+            TArg arg,
+            IndexedPredicate<T, TArg> predicate) where TEnumerator : IEnumerator<T>
+        {
+            return WhereIndexedEnumerable.From(source.GetEnumerator(), arg, predicate);
+        }
+
+        public static WhereEnumerable<T, TakeEnumerable<T, TEnumerator>.Enumerator> Where<T, TEnumerator>(
+            this TakeEnumerable<T, TEnumerator> source,
+            Func<T, bool> predicate) where TEnumerator : IEnumerator<T>
+        {
+            return WhereEnumerable.From(source.GetEnumerator(), predicate);
+        }
+
+        public static WhereEnumerable<T, TArg, TakeEnumerable<T, TEnumerator>.Enumerator> Where<T, TArg, TEnumerator>(
+            this TakeEnumerable<T, TEnumerator> source,
+            TArg arg,
+            Predicate<T, TArg> predicate) where TEnumerator : IEnumerator<T>
+        {
+            return WhereEnumerable.From(source.GetEnumerator(), arg, predicate);
+        }
+
+        public static WhereIndexedEnumerable<T, TArg, TakeEnumerable<T, TEnumerator>.Enumerator> Where<T, TArg, TEnumerator>(
+            this TakeEnumerable<T, TEnumerator> source,
+            TArg arg,
+            IndexedPredicate<T, TArg> predicate) where TEnumerator : IEnumerator<T>
+        {
+            return WhereIndexedEnumerable.From(source.GetEnumerator(), arg, predicate);
+        }
+
+        #endregion
     }
 }

@@ -832,8 +832,56 @@ namespace CodeMania.FastLinq
             throw new InvalidOperationException(NoMatchingElement);
         }
 
-        #endregion
+        public static T First<T, TEnumerator>(this SkipEnumerable<T, TEnumerator> source)
+            where TEnumerator : IEnumerator<T>
+        {
+            foreach (var item in source)
+            {
+                return item;
+            }
 
-        // TODO: Add Skip/Take support
+            throw new InvalidOperationException(NoElements);
+        }
+
+        public static T First<T, TEnumerator>(this SkipEnumerable<T, TEnumerator> source, Func<T, bool> predicate)
+            where TEnumerator : IEnumerator<T>
+        {
+            CheckPredicate(predicate);
+
+            foreach (var item in source)
+            {
+                if (predicate(item))
+                    return item;
+            }
+
+            throw new InvalidOperationException(NoElements);
+        }
+
+        public static T First<T, TEnumerator>(this TakeEnumerable<T, TEnumerator> source)
+            where TEnumerator : IEnumerator<T>
+        {
+            foreach (var item in source)
+            {
+                return item;
+            }
+
+            throw new InvalidOperationException(NoElements);
+        }
+
+        public static T First<T, TEnumerator>(this TakeEnumerable<T, TEnumerator> source, Func<T, bool> predicate)
+            where TEnumerator : IEnumerator<T>
+        {
+            CheckPredicate(predicate);
+
+            foreach (var item in source)
+            {
+                if (predicate(item))
+                    return item;
+            }
+
+            throw new InvalidOperationException(NoElements);
+        }
+
+        #endregion
     }
 }

@@ -345,8 +345,74 @@ namespace CodeMania.FastLinq
             return SelectEnumerable.From(source.GetEnumerator(), selector);
         }
 
-        #endregion
+        public static SelectEnumerable<TSource, TResult, SkipEnumerable<TSource, TEnumerator>.Enumerator> Select<TSource, TResult, TEnumerator>(
+            this SkipEnumerable<TSource, TEnumerator> source,
+            Func<TSource, TResult> selector)
+            where TEnumerator : IEnumerator<TSource>
+        {
+            return SelectEnumerable.From(source.GetEnumerator(), selector);
+        }
 
-        // TODO: Add Skip/Take support
+        public static SelectEnumerable<TSource, TResult, TakeEnumerable<TSource, TEnumerator>.Enumerator> Select<TSource, TResult, TEnumerator>(
+            this TakeEnumerable<TSource, TEnumerator> source,
+            Func<TSource, TResult> selector)
+            where TEnumerator : IEnumerator<TSource>
+        {
+            return SelectEnumerable.From(source.GetEnumerator(), selector);
+        }
+
+        public static SelectIndexedEnumerable<TSource, TResult, SkipEnumerable<TSource, TEnumerator>.Enumerator> Select<TSource, TResult, TEnumerator>(
+            this SkipEnumerable<TSource, TEnumerator> source,
+            Func<TSource, int, TResult> selector)
+            where TEnumerator : IEnumerator<TSource>
+        {
+            return SelectIndexedEnumerable.From(source.GetEnumerator(), selector);
+        }
+
+        public static SelectIndexedEnumerable<TSource, TResult, TakeEnumerable<TSource, TEnumerator>.Enumerator> Select<TSource, TResult, TEnumerator>(
+            this TakeEnumerable<TSource, TEnumerator> source,
+            Func<TSource, int, TResult> selector)
+            where TEnumerator : IEnumerator<TSource>
+        {
+            return SelectIndexedEnumerable.From(source.GetEnumerator(), selector);
+        }
+
+        public static SelectEnumerable<TSource, TArg, TResult, SkipEnumerable<TSource, TEnumerator>.Enumerator> Select<TSource, TArg, TResult, TEnumerator>(
+            this SkipEnumerable<TSource, TEnumerator> source,
+            TArg arg,
+            Selector<TSource, TArg, TResult> selector)
+            where TEnumerator : IEnumerator<TSource>
+        {
+            return SelectEnumerable.From(source.GetEnumerator(), arg, selector);
+        }
+
+        public static SelectEnumerable<TSource, TArg, TResult, TakeEnumerable<TSource, TEnumerator>.Enumerator> Select<TSource, TArg, TResult, TEnumerator>(
+            this TakeEnumerable<TSource, TEnumerator> source,
+            TArg arg,
+            Selector<TSource, TArg, TResult> selector)
+            where TEnumerator : IEnumerator<TSource>
+        {
+            return SelectEnumerable.From(source.GetEnumerator(), arg, selector);
+        }
+
+        public static SelectIndexedEnumerable<TSource, TArg, TResult, SkipEnumerable<TSource, TEnumerator>.Enumerator> Select<TSource, TArg, TResult, TEnumerator>(
+            this SkipEnumerable<TSource, TEnumerator> source,
+            TArg arg,
+            IndexedSelector<TSource, TArg, TResult> selector)
+            where TEnumerator : IEnumerator<TSource>
+        {
+            return SelectIndexedEnumerable.From(source.GetEnumerator(), arg, selector);
+        }
+
+        public static SelectIndexedEnumerable<TSource, TArg, TResult, TakeEnumerable<TSource, TEnumerator>.Enumerator> Select<TSource, TArg, TResult, TEnumerator>(
+            this TakeEnumerable<TSource, TEnumerator> source,
+            TArg arg,
+            IndexedSelector<TSource, TArg, TResult> selector)
+            where TEnumerator : IEnumerator<TSource>
+        {
+            return SelectIndexedEnumerable.From(source.GetEnumerator(), arg, selector);
+        }
+
+        #endregion
     }
 }
